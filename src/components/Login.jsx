@@ -1,22 +1,66 @@
 import { useRef, useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-
+import useAuth from "../hooks/useAuth";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import axios from "../api/axios";
+const LOGIN_URL = "/auth";
 import "../tailwind.css";
 
 const Login = () => {
+  const { setAuth } = useAuth();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
   const userRef = useRef();
   const errRef = useRef();
 
-  const [emial, setUser] = useState("");
+  const [user, setUser] = useState("");
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
-  const [success, setSuccess] = useState(false);
 
-  const { register, handleSubmit } = useForm();
+  useEffect(() => {
+    userRef.current.focus();
+  }, []);
 
-  function handleSingIn(data) {
-    console.log(data);
-  }
+  useEffect(() => {
+    setErrMsg("");
+  }, [user, pwd]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        LOGIN_URL,
+        JSON.stringify({ user, pwd }),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      console.log(JSON.stringify(response?.data));
+      //console.log(JSON.stringify(response));
+      const accessToken = response?.data?.accessToken;
+      const roles = response?.data?.roles;
+      setAuth({ user, pwd, roles, accessToken });
+      setUser("");
+      setPwd("");
+      navigate(from, { replace: true });
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg("No Server Response");
+      } else if (err.response?.status === 400) {
+        setErrMsg("Missing Username or Password");
+      } else if (err.response?.status === 401) {
+        setErrMsg("Unauthorized");
+      } else {
+        setErrMsg("Login Failed");
+      }
+      errRef.current.focus();
+    }
+  };
+  // ---------------------------------------------
 
   return (
     <section
@@ -24,7 +68,7 @@ const Login = () => {
         bg-gradient-to-r from-cyan-500 from-10% via-indigo-500 via-50% to-sky-500 to-100%"
     >
       <form
-        onSubmit={handleSubmit(handleSingIn)}
+        onSubmit={handleSubmit}
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
       >
         <input type="hidden" name="remember" defaultValue={true} />
@@ -37,7 +81,6 @@ const Login = () => {
               Email address:
             </label>
             <input
-              {...register("email")}
               id="email-address"
               name="email"
               type="email"
@@ -46,7 +89,7 @@ const Login = () => {
               placeholder="Email address"
               required
               onChange={(e) => setUser(e.target.value)}
-              value={emial}
+              value={user}
             />
 
             <div>
@@ -54,7 +97,6 @@ const Login = () => {
                 Password:
               </label>
               <input
-                {...register("password")}
                 id="password"
                 name="password"
                 type="password"
