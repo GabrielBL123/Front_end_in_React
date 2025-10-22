@@ -1,10 +1,13 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router";
+import Login from "./components/Login";
 
-import LoginPage from "./components/Login.jsx";
+const root = ReactDOM.createRoot(document.getElementById("root"));
 
-createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <LoginPage />
-  </StrictMode>
+root.render(
+  <BrowserRouter>
+    <Routes>
+      <Route path="/*" element={<Login />} />
+    </Routes>
+  </BrowserRouter>
 );

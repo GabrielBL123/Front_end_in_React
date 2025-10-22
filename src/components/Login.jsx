@@ -1,12 +1,12 @@
 import { useRef, useState, useEffect } from "react";
-import useAuth from "../hooks/useAuth";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+//import useAuth from "../hooks/useAuth";
+import { Link, useNavigate, useLocation } from "react-router";
 import axios from "../api/axios";
-const LOGIN_URL = "/auth";
+const LOGIN_URL = "/auth/login";
 import "../tailwind.css";
 
 const Login = () => {
-  const { setAuth } = useAuth();
+  //const { setAuth } = useAuth();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,14 +18,6 @@ const Login = () => {
   const [user, setUser] = useState("");
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
-
-  useEffect(() => {
-    userRef.current.focus();
-  }, []);
-
-  useEffect(() => {
-    setErrMsg("");
-  }, [user, pwd]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,7 +35,7 @@ const Login = () => {
       //console.log(JSON.stringify(response));
       const accessToken = response?.data?.accessToken;
       const roles = response?.data?.roles;
-      setAuth({ user, pwd, roles, accessToken });
+      //setAuth({ user, pwd, roles, accessToken });
       setUser("");
       setPwd("");
       navigate(from, { replace: true });
@@ -67,6 +59,9 @@ const Login = () => {
       className="min-h-screen flex items-center justify-center font-mono 
         bg-gradient-to-r from-cyan-500 from-10% via-indigo-500 via-50% to-sky-500 to-100%"
     >
+      <p ref={errRef} className="text-red-500" aria-live="assertive">
+        {errMsg}
+      </p>
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
