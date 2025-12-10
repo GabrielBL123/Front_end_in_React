@@ -1,6 +1,6 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import useAuth from "../hooks/useAuth";
-import { Link, useNavigate, useLocation } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "../api/axios";
 const LOGIN_URL = "/auth/login";
 import "../tailwind.css";
@@ -12,12 +12,12 @@ const Login = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
 
-  const userRef = useRef();
+  // const userRef = useRef();
   const errRef = useRef();
 
   const [user, setUser] = useState("");
   const [pwd, setPwd] = useState("");
-  const [errMsg, setErrMsg] = useState("");
+  const [errMsg /*setErrMsg*/] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,7 +25,7 @@ const Login = () => {
     try {
       const response = await axios.post(
         LOGIN_URL,
-        JSON.stringify({ user, pwd }),
+        JSON.stringify({ login: user, password: pwd }),
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
@@ -40,7 +40,9 @@ const Login = () => {
       setPwd("");
       navigate(from, { replace: true });
     } catch (err) {
-      if (!err?.response) {
+      console.log(err);
+      /*
+      if (err?.response) {
         setErrMsg("No Server Response");
       } else if (err.response?.status === 400) {
         setErrMsg("Missing Username or Password");
@@ -50,29 +52,21 @@ const Login = () => {
         setErrMsg("Login Failed");
       }
       errRef.current.focus();
+      */
     }
   };
   // ---------------------------------------------
 
   return (
-    <section
-      className="min-h-screen flex items-center justify-center font-mono 
-        bg-gradient-to-r from-cyan-500 from-10% via-indigo-500 via-50% to-sky-500 to-100%"
-    >
+    <section>
       <p ref={errRef} className="text-red-500" aria-live="assertive">
         {errMsg}
       </p>
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
-      >
+      <form onSubmit={handleSubmit}>
         <input type="hidden" name="remember" defaultValue={true} />
         <div>
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="email" className="block text-sm font-medium ">
               Email address:
             </label>
             <input
@@ -80,7 +74,7 @@ const Login = () => {
               name="email"
               type="email"
               autoComplete="email"
-              className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-300  rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
               placeholder="Email address"
               required
               onChange={(e) => setUser(e.target.value)}
@@ -88,7 +82,7 @@ const Login = () => {
             />
 
             <div>
-              <label htmlFor="password" className="">
+              <label htmlFor="password" className="block text-sm font-medium ">
                 Password:
               </label>
               <input
@@ -97,7 +91,7 @@ const Login = () => {
                 type="password"
                 autoComplete="current-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-300  rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
                 onChange={(e) => setPwd(e.target.value)}
                 value={pwd}
@@ -115,7 +109,7 @@ const Login = () => {
               <br />
               <span className="line">
                 {/*put router link here*/}
-                <a href="#">Sign Up</a>
+                <a href="/register">Sign Up</a>
               </span>
             </p>
           </div>
