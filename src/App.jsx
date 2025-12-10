@@ -18,10 +18,11 @@ function App() {
         {/* public routes */}
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="unauthorized" element={<h1>Unauthorized</h1>} />
 
         {/* protected routes */}
         <Route element={<RequireAuth allowedRoles={[Roles.User]} />}>
-          <Route path="/" element={<Menu />} />
+          <Route index element={<Menu />} />
         </Route>
       </Route>
     </Routes>
