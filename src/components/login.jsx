@@ -1,6 +1,6 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import useAuth from "../hooks/useAuth";
-import { Link, useNavigate, useLocation } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "../api/axios";
 const LOGIN_URL = "/auth/login";
 import "../tailwind.css";
@@ -12,12 +12,12 @@ const Login = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
 
-  const userRef = useRef();
+  // const userRef = useRef();
   const errRef = useRef();
 
   const [user, setUser] = useState("");
   const [pwd, setPwd] = useState("");
-  const [errMsg, setErrMsg] = useState("");
+  const [errMsg /*setErrMsg*/] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
