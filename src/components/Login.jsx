@@ -10,7 +10,7 @@ const Login = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "menu";
+  const from = location.state?.from?.pathname || "/menu";
 
   // const userRef = useRef();
   const errRef = useRef();
