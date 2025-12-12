@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import useAuth from "../hooks/useAuth";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 const LOGIN_URL = "/auth/login";
 import "../tailwind.css";
@@ -9,8 +9,6 @@ const Login = () => {
   const { setAuth } = useAuth();
 
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "menu";
 
   // const userRef = useRef();
   const errRef = useRef();
@@ -39,7 +37,7 @@ const Login = () => {
 
       setUser("");
       setPwd("");
-      navigate(from, { replace: true });
+      navigate("/", { replace: true });
     } catch (err) {
       console.log(err);
       /*

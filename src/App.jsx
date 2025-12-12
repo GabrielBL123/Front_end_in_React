@@ -24,7 +24,7 @@ function App() {
 
         {/* protected routes for USER */}
         <Route element={<RequireAuth allowedRoles={[Roles.User]} />}>
-          <Route path="menu" element={<Menu />} />
+          <Route path="/" element={<Menu />} />
         </Route>
         {/* protected routes for ADMIN */}
         <Route element={<RequireAuth allowedRoles={[Roles.Admin]} />}>
