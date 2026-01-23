@@ -3,7 +3,10 @@ import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Users = () => {
-  const [users, setUsers] = useState();
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
@@ -14,14 +17,38 @@ const Users = () => {
 
     const getUsers = async () => {
       try {
+        setLoading(true);
+        setError(null);
+
         const response = await axiosPrivate.get("/users", {
-          //signal: controller.signal,
+          signal: controller.signal,
         });
-        console.log(response.data);
-        isMounted && setUsers(response.data);
+
+        if (isMounted) {
+          setUsers(response.data);
+        }
       } catch (err) {
-        console.error(err);
-        navigate("/login", { state: { from: location }, replace: true });
+        // Ignore abort errors (component unmounted)
+        if (err.name === "CanceledError" || err.name === "AbortError") {
+          return;
+        }
+
+        console.error("Error fetching users:", err);
+
+        // Handle authentication errors
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          navigate("/login", { state: { from: location }, replace: true });
+          return;
+        }
+
+        // Handle other errors
+        if (isMounted) {
+          setError(err.response?.data?.message || "Failed to fetch users");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
@@ -31,15 +58,36 @@ const Users = () => {
       isMounted = false;
       controller.abort();
     };
-  }, []);
+  }, [axiosPrivate, navigate, location]);
 
+  // Render loading state
+  if (loading) {
+    return (
+      <article>
+        <h2>Users List</h2>
+        <p>Loading users...</p>
+      </article>
+    );
+  }
+
+  // Render error state
+  if (error) {
+    return (
+      <article>
+        <h2>Users List</h2>
+        <p className="error">Error: {error}</p>
+      </article>
+    );
+  }
+
+  // Render users list
   return (
     <article>
       <h2>Users List</h2>
-      {users?.length ? (
+      {users.length > 0 ? (
         <ul>
-          {users.map((user, i) => (
-            <li key={i}>{user?.username}</li>
+          {users.map((user) => (
+            <li key={user.id || user.username}>{user.username}</li>
           ))}
         </ul>
       ) : (
