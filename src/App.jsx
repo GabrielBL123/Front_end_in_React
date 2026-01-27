@@ -9,7 +9,7 @@ import Users from "./components/Users";
 
 const Roles = {
   User: "USER",
-  Editor: "1984",
+  Owner: "OWNER",
   Admin: "ADMIN",
 };
 
