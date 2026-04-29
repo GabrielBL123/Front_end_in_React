@@ -9,12 +9,12 @@ import Users from "./components/Users";
 import CompanyForm from "./components/CompanyForm";
 import Perfil from "./components/Perfil";
 import Questionario from "./components/Questionario";
-
 import HomeScreen from "./components/HomeScreen";
 import Cadastrofuncionarios from "./components/CadastroFuncionarios";
 import CadastroRH from "./components/CadastroRH";
-
-import CompletarCadastro from "./components/CompletarCadastro";
+import CriaSetores from "./components/CriaSetores";
+import Status from "./components/Status";
+import CriaQuestionario from "./components/CriaQuestionario";
 
 const Roles = {
   User: "USER",
@@ -34,9 +34,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="unauthorized" element={<Unauthorized />} />
 
-        <Route path="completar-cadastro" element={<CompletarCadastro />} />
-
-        {/* ROTAS PROTEGIDAS DE GESTÃO
+        {/* ROTAS PROTEGIDAS DE GESTÃO (Apenas RH/Admin)
          */}
         <Route
           element={<RequireAuth allowedRoles={[Roles.Owner, Roles.Admin]} />}
@@ -47,9 +45,12 @@ function App() {
           />
           <Route path="empresa" element={<CompanyForm />} />
           <Route path="users" element={<Users />} />
+          <Route path="criar-setores" element={<CriaSetores />} />
+          <Route path="status" element={<Status />} />
+          <Route path="cria-questionario" element={<CriaQuestionario />} />
         </Route>
 
-        {/* ROTAS GERAIS(O Menu)
+        {/* ROTAS GERAIS (O Menu e coisas para todo mundo)
          */}
         <Route
           element={

@@ -91,7 +91,7 @@ const CompanyForm = () => {
             sucesso.
           </p>
           <p className="text-sm text-gray-400 mt-8">
-            Redirecionando de volta ao Menu Principal...
+            Redirecionando de volta ao Menu Principal
           </p>
         </div>
       ) : (
