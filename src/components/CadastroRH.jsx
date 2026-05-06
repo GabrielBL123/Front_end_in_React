@@ -2,7 +2,8 @@ import { useRef, useState, useEffect } from "react";
 import axios from "../api/axios";
 import { useNavigate } from "react-router-dom";
 
-const REGISTER_URL = "/auth/registrar";
+// ATUALIZAÇÃO: Nova rota específica para criar RH/Empresa
+const REGISTER_URL = "/admin/criar-rh-empresa";
 
 const CadastroRH = () => {
   const navigate = useNavigate();
@@ -10,18 +11,19 @@ const CadastroRH = () => {
   const errRef = useRef();
   const emailRef = useRef();
 
-  const [email, setEmail] = useState("");
+  // Dados do Administrador (RH)
+  const [login, setLogin] = useState(""); // Usado para o e-mail de acesso
   const [nome, setNome] = useState("");
   const [pwd, setPwd] = useState("");
   const [matchPwd, setMatchPwd] = useState("");
 
+  // Dados da Empresa (Exigidos pelo novo DTO)
+  const [cnpj, setCnpj] = useState("");
+  const [nomeEmpresa, setNomeEmpresa] = useState("");
+  const [emailEmpresa, setEmailEmpresa] = useState("");
+
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
-
-  const [empresaCnpj, setEmpresaCnpj] = useState("");
-  const [cargo, setCargo] = useState("");
-  const [tempoDeTrabalho, setTempoDeTrabalho] = useState("");
-  const [jornada, setJornada] = useState("");
 
   useEffect(() => {
     emailRef.current.focus();
@@ -29,39 +31,7 @@ const CadastroRH = () => {
 
   useEffect(() => {
     setErrMsg("");
-  }, [email, nome, pwd, matchPwd]);
-
-  const traduzirTempoDeTrabalho = (texto) => {
-    if (!texto) return null;
-    const textoMin = texto.toLowerCase();
-    const hoje = new Date();
-
-    const regexData = /(\d{2})\/(\d{2})\/(\d{4})/;
-    const matchData = texto.match(regexData);
-    if (matchData) {
-      return `${matchData[3]}-${matchData[2]}-${matchData[1]}T08:00:00`;
-    }
-
-    if (textoMin.includes("ano")) {
-      const qtd = parseInt(texto.replace(/\D/g, "")) || 0;
-      hoje.setFullYear(hoje.getFullYear() - qtd);
-      return hoje.toISOString().split(".")[0];
-    }
-
-    if (textoMin.includes("mes") || textoMin.includes("mês")) {
-      const qtd = parseInt(texto.replace(/\D/g, "")) || 0;
-      hoje.setMonth(hoje.getMonth() - qtd);
-      return hoje.toISOString().split(".")[0];
-    }
-
-    return hoje.toISOString().split(".")[0];
-  };
-
-  const traduzirJornada = (texto) => {
-    if (!texto) return null;
-    const horas = texto.replace(/\D/g, "");
-    return horas ? `PT${horas}H` : null;
-  };
+  }, [login, nome, pwd, matchPwd, cnpj, nomeEmpresa, emailEmpresa]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,46 +42,47 @@ const CadastroRH = () => {
     }
 
     try {
+      // ATUALIZAÇÃO: Payload formatado exatamente como o RegistrarRhDTO.java
       const payload = JSON.stringify({
-        login: email,
         nome: nome,
+        login: login,
         password: pwd,
         role: "ADMIN",
-        empresaCnpj: empresaCnpj,
-        cargo: cargo,
-        tempoDeTrabalho: traduzirTempoDeTrabalho(tempoDeTrabalho),
-        jornada: traduzirJornada(jornada),
+        cnpj: cnpj,
+        nomeEmpresa: nomeEmpresa,
+        emailEmpresa: emailEmpresa,
       });
 
       const response = await axios.post(REGISTER_URL, payload, {
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true, // Mantido caso haja necessidade de cookies de auth futuros
       });
 
       if (response.status === 200 || response.status === 201) {
         setSuccess(true);
-        setEmail("");
+        setLogin("");
         setNome("");
         setPwd("");
         setMatchPwd("");
-        setEmpresaCnpj("");
-        setCargo("");
-        setTempoDeTrabalho("");
-        setJornada("");
+        setCnpj("");
+        setNomeEmpresa("");
+        setEmailEmpresa("");
       }
     } catch (err) {
       if (!err?.response) {
         setErrMsg("Sem resposta do servidor.");
       } else if (err.response?.status === 409) {
-        setErrMsg("Login (E-mail) já existente.");
+        setErrMsg("Login (E-mail) ou CNPJ já existente.");
       } else if (err.response?.status === 400) {
         setErrMsg(
-          err.response.data ||
-            "Erro 400: Dados inválidos ou Empresa não encontrada.",
+          err.response.data?.message ||
+            err.response.data ||
+            "Erro 400: Verifique se todos os campos foram preenchidos corretamente.",
         );
       } else if (err.response?.status === 403) {
-        setErrMsg("Sem permissão para cadastrar administradores.");
+        setErrMsg("Sem permissão para realizar esta ação.");
       } else {
         setErrMsg("Falha no registo.");
       }
@@ -126,12 +97,14 @@ const CadastroRH = () => {
           <h1 className="text-4xl font-extrabold text-green-700 mb-6">
             Sucesso!
           </h1>
-          <p className="text-xl text-gray-700 mb-4">Registo de RH concluído.</p>
+          <p className="text-xl text-gray-700 mb-4">
+            Registo de RH e Empresa concluído.
+          </p>
           <p className="text-lg text-blue-600 font-medium mb-6">
             O link de acesso foi enviado com sucesso para o e-mail informado.
           </p>
           <button
-            onClick={() => navigate("/menu")}
+            onClick={() => navigate("/")}
             className="px-8 py-3 bg-green-600 hover:bg-green-500 text-white text-lg font-bold rounded-lg shadow-md transition-all"
           >
             Ir para o Menu
@@ -141,7 +114,7 @@ const CadastroRH = () => {
         <div className="w-full max-w-4xl bg-white p-10 md:p-14 rounded-3xl shadow-2xl my-8 mx-auto">
           <div className="flex justify-center mb-8 border-b-2 border-green-100 pb-4">
             <h2 className="text-3xl md:text-4xl font-extrabold text-green-700">
-              Registar RH
+              Registar RH e Empresa
             </h2>
           </div>
 
@@ -159,33 +132,13 @@ const CadastroRH = () => {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* 1. E-MAIL (Usado como Login) */}
-              <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="email"
-                  className="font-semibold text-gray-700 text-lg"
-                >
-                  E-mail de Acesso:
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  ref={emailRef}
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email}
-                  required
-                  placeholder="Ex: rh@empresa.com.br"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
-                />
-              </div>
-
-              {/* 2. NOME */}
+              {/* 1. NOME COMPLETO (RH) */}
               <div className="flex flex-col gap-2">
                 <label
                   htmlFor="nome"
                   className="font-semibold text-gray-700 text-lg"
                 >
-                  Nome Completo:
+                  Nome Completo (Admin):
                 </label>
                 <input
                   type="text"
@@ -193,30 +146,92 @@ const CadastroRH = () => {
                   onChange={(e) => setNome(e.target.value)}
                   value={nome}
                   required
+                  placeholder="Ex: Ana Silva"
                   className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
                 />
               </div>
 
-              {/* 3. CNPJ DA EMPRESA */}
+              {/* 2. E-MAIL DE ACESSO (Login do RH) */}
               <div className="flex flex-col gap-2">
                 <label
-                  htmlFor="empresaCnpj"
+                  htmlFor="login"
+                  className="font-semibold text-gray-700 text-lg"
+                >
+                  E-mail de Acesso (Login):
+                </label>
+                <input
+                  type="email"
+                  id="login"
+                  ref={emailRef}
+                  onChange={(e) => setLogin(e.target.value)}
+                  value={login}
+                  required
+                  placeholder="Ex: ana.silva@empresa.com.br"
+                  className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
+                />
+              </div>
+
+              {/* 3. NOME DA EMPRESA */}
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="nomeEmpresa"
+                  className="font-semibold text-gray-700 text-lg"
+                >
+                  Nome da Empresa:
+                </label>
+                <input
+                  type="text"
+                  id="nomeEmpresa"
+                  onChange={(e) => setNomeEmpresa(e.target.value)}
+                  value={nomeEmpresa}
+                  required
+                  placeholder="Ex: Tech Solutions Ltda"
+                  className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
+                />
+              </div>
+
+              {/* 4. CNPJ DA EMPRESA */}
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="cnpj"
                   className="font-semibold text-gray-700 text-lg"
                 >
                   CNPJ da Empresa:
                 </label>
                 <input
                   type="text"
-                  id="empresaCnpj"
-                  onChange={(e) => setEmpresaCnpj(e.target.value)}
-                  value={empresaCnpj}
+                  id="cnpj"
+                  onChange={(e) => setCnpj(e.target.value)}
+                  value={cnpj}
                   required
                   placeholder="Ex: 00.000.000/0001-00"
                   className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
                 />
               </div>
 
-              {/* 4. SENHA */}
+              {/* 5. E-MAIL COMERCIAL DA EMPRESA */}
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="emailEmpresa"
+                  className="font-semibold text-gray-700 text-lg"
+                >
+                  E-mail Comercial (Empresa):
+                </label>
+                <input
+                  type="email"
+                  id="emailEmpresa"
+                  onChange={(e) => setEmailEmpresa(e.target.value)}
+                  value={emailEmpresa}
+                  required
+                  placeholder="Ex: contato@empresa.com.br"
+                  className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
+                />
+              </div>
+
+              {/* DIV VAZIA PARA ALINHAR AS SENHAS NO FINAL DA GRID */}
+              <div className="hidden md:block"></div>
+
+              {/* 6. SENHA */}
               <div className="flex flex-col gap-2">
                 <label
                   htmlFor="password"
@@ -234,7 +249,7 @@ const CadastroRH = () => {
                 />
               </div>
 
-              {/* 5. CONFIRMAR SENHA */}
+              {/* 7. CONFIRMAR SENHA */}
               <div className="flex flex-col gap-2">
                 <label
                   htmlFor="confirm_pwd"
@@ -251,63 +266,6 @@ const CadastroRH = () => {
                   className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
                 />
               </div>
-
-              {/* 6. CARGO */}
-              <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="cargo"
-                  className="font-semibold text-gray-700 text-lg"
-                >
-                  Cargo:
-                </label>
-                <input
-                  type="text"
-                  id="cargo"
-                  onChange={(e) => setCargo(e.target.value)}
-                  value={cargo}
-                  required
-                  placeholder="Ex: Analista de RH"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
-                />
-              </div>
-
-              {/* 7. TEMPO DE TRABALHO */}
-              <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="tempoDeTrabalho"
-                  className="font-semibold text-gray-700 text-lg"
-                >
-                  Tempo de Empresa:
-                </label>
-                <input
-                  type="text"
-                  id="tempoDeTrabalho"
-                  onChange={(e) => setTempoDeTrabalho(e.target.value)}
-                  value={tempoDeTrabalho}
-                  required
-                  placeholder="Ex: 5 anos"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
-                />
-              </div>
-
-              {/* 8. JORNADA */}
-              <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="jornada"
-                  className="font-semibold text-gray-700 text-lg"
-                >
-                  Jornada Semanal:
-                </label>
-                <input
-                  type="text"
-                  id="jornada"
-                  onChange={(e) => setJornada(e.target.value)}
-                  value={jornada}
-                  required
-                  placeholder="Ex: 40h"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
-                />
-              </div>
             </div>
 
             <div className="mt-6 flex flex-col gap-4">
@@ -315,15 +273,15 @@ const CadastroRH = () => {
                 type="submit"
                 className="w-full py-4 px-6 bg-green-600 hover:bg-green-500 text-white text-xl font-bold rounded-lg shadow-md transition-all"
               >
-                Registar RH
+                Registar Empresa e RH
               </button>
 
               <button
                 type="button"
-                onClick={() => navigate("/home")}
+                onClick={() => navigate("/")}
                 className="w-full py-3 px-6 bg-gray-100 hover:bg-gray-200 text-gray-600 text-lg font-bold rounded-lg transition-all border border-gray-300"
               >
-                Pular esta etapa
+                Cancelar
               </button>
             </div>
           </form>

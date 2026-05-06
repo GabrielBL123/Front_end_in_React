@@ -1,41 +1,25 @@
-import { useMemo } from "react";
-import axios from "axios";
-
-// Helper function to get cookie value by name
-const getCookie = (name) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) {
-    return parts.pop().split(";").shift();
-  }
-  return null;
-};
+import { useEffect } from "react";
+import { axiosPrivate } from "../api/axios";
+import useAuth from "./useAuth";
 
 const useAxiosPrivate = () => {
-  const axiosPrivate = useMemo(() => {
-    const instance = axios.create({
-      baseURL: "http://localhost:8080",
-      headers: { "Content-Type": "application/json" },
-      withCredentials: true,
-    });
+  const { auth } = useAuth();
 
-    // Add request interceptor
-    instance.interceptors.request.use(
+  useEffect(() => {
+    const requestIntercept = axiosPrivate.interceptors.request.use(
       (config) => {
-        // Get token from cookie
-        const token = getCookie("jwt");
-
-        if (token) {
-          config.headers["Authorization"] = `Bearer ${token}`;
+        if (auth?.accessToken) {
+          config.headers.Authorization = `Bearer ${auth.accessToken}`;
         }
-
         return config;
       },
-      (error) => Promise.reject(error)
+      (error) => Promise.reject(error),
     );
 
-    return instance;
-  }, []);
+    return () => {
+      axiosPrivate.interceptors.request.eject(requestIntercept);
+    };
+  }, [auth]);
 
   return axiosPrivate;
 };

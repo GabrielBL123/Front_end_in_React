@@ -2,13 +2,13 @@ import { useRef, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
-const LOGIN_URL = "/auth/login";
 import "../tailwind.css";
+
+const LOGIN_URL = "/auth/login";
 
 const Login = () => {
   const { setAuth } = useAuth();
   const navigate = useNavigate();
-
   const errRef = useRef();
 
   const [user, setUser] = useState("");
@@ -28,25 +28,27 @@ const Login = () => {
         },
       );
 
-      console.log(JSON.stringify(response?.data));
-
-      const accessToken = response?.data?.accessToken;
+      const accessToken = response?.data?.token;
       const roles = response?.data?.roles || [];
+
+      // ✅ Salva no contexto
       setAuth({ user, pwd, roles, accessToken });
+
+      // ✅ Salva no localStorage para o fetch usar
+      localStorage.setItem("token", accessToken);
 
       setUser("");
       setPwd("");
       navigate("/menu", { replace: true });
     } catch (err) {
-      console.log(err);
-      if (err?.response) {
-        setErrMsg("No Server Response");
+      if (!err?.response) {
+        setErrMsg("Sem resposta do servidor");
       } else if (err.response?.status === 400) {
-        setErrMsg("Missing Username or Password");
-      } else if (err.response?.status === 401) {
-        setErrMsg("Unauthorized");
+        setErrMsg("Usuário ou senha ausentes");
+      } else if (err.response?.status === 401 || err.response?.status === 403) {
+        setErrMsg("Não autorizado (Credenciais incorretas)");
       } else {
-        setErrMsg("Login Failed");
+        setErrMsg("Falha no login");
       }
       errRef.current.focus();
     }
@@ -67,7 +69,7 @@ const Login = () => {
           <div>
             <label
               htmlFor="email-address"
-              className="block text-sm font-medium "
+              className="block text-sm font-medium"
             >
               Login:
             </label>
@@ -75,15 +77,18 @@ const Login = () => {
               id="email-address"
               name="email"
               autoComplete="email"
-              className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-300  rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="Email address"
+              className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-300 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              placeholder="Digite seu login ou email"
               required
               onChange={(e) => setUser(e.target.value)}
               value={user}
             />
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium ">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium mt-4"
+              >
                 Password:
               </label>
               <input
@@ -92,7 +97,7 @@ const Login = () => {
                 type="password"
                 autoComplete="current-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-300  rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-300 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
                 onChange={(e) => setPwd(e.target.value)}
                 value={pwd}
