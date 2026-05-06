@@ -15,6 +15,8 @@ import CadastroRH from "./components/CadastroRH";
 import CriaSetores from "./components/CriaSetores";
 import Status from "./components/Status";
 import CriaQuestionario from "./components/CriaQuestionario";
+import TelaAdmin from "./components/TelaAdmin";
+import AvaliacoesMensais from "./components/AvaliacoesMensais";
 
 const Roles = {
   User: "USER",
@@ -26,16 +28,17 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        {/*
-             ROTAS PÚBLICAS (inicial)
-         */}
-        <Route index element={<CadastroRH />} />
+        {/* =========================================
+            ROTAS PÚBLICAS (Acesso livre para testes)
+            ========================================= */}
+        <Route index element={<TelaAdmin />} />
         <Route path="home" element={<HomeScreen />} />
         <Route path="login" element={<Login />} />
         <Route path="unauthorized" element={<Unauthorized />} />
 
-        {/* ROTAS PROTEGIDAS DE GESTÃO (Apenas RH/Admin)
-         */}
+        {/* MOVEMOS PARA CÁ: Agora você pode clicar no botão da TelaAdmin e entrar aqui direto */}
+        <Route path="cadastro-rh" element={<CadastroRH />} />
+
         <Route
           element={<RequireAuth allowedRoles={[Roles.Owner, Roles.Admin]} />}
         >
@@ -48,10 +51,9 @@ function App() {
           <Route path="criar-setores" element={<CriaSetores />} />
           <Route path="status" element={<Status />} />
           <Route path="cria-questionario" element={<CriaQuestionario />} />
+          <Route path="/avaliacoes" element={<AvaliacoesMensais />} />
         </Route>
 
-        {/* ROTAS GERAIS (O Menu e coisas para todo mundo)
-         */}
         <Route
           element={
             <RequireAuth

@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import { axiosPrivate } from "../api/axios";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Perfil = () => {
   const { auth } = useAuth();
+  const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
 
   const [dadosBanco, setDadosBanco] = useState({
@@ -20,18 +21,16 @@ const Perfil = () => {
 
     const buscarDadosDoUsuario = async () => {
       try {
-        const response = await axiosPrivate.get(`/usuarios/${auth.user}`, {
-          headers: {
-            Authorization: `Bearer ${auth?.accessToken}`,
-          },
-        });
+        // ✅ Usa o hook com interceptor de token
+        const response = await axiosPrivate.get(`/usuarios/${auth.user}`);
 
         if (isMounted) {
+          // ✅ Acessa response.data.data (ResponseDTO encapsula os dados)
           setDadosBanco({
-            cargo: response.data.cargo,
-            setor: response.data.setor,
-            tempoDeTrabalho: response.data.tempoDeTrabalho,
-            jornada: response.data.jornada,
+            cargo: response.data.data.cargo,
+            setor: response.data.data.setor,
+            tempoDeTrabalho: response.data.data.tempoDeTrabalho,
+            jornada: response.data.data.jornada,
           });
           setCarregando(false);
         }
@@ -48,7 +47,7 @@ const Perfil = () => {
     return () => {
       isMounted = false;
     };
-  }, [auth]);
+  }, [auth, axiosPrivate]);
 
   const formatarData = (dataIso) => {
     if (!dataIso) return "Não informado";
