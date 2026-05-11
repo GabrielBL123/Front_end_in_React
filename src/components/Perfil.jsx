@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
@@ -7,6 +7,7 @@ const Perfil = () => {
   const { auth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
+  const context = useContext(useAuth);
 
   const [dadosBanco, setDadosBanco] = useState({
     cargo: "",
@@ -22,7 +23,9 @@ const Perfil = () => {
     const buscarDadosDoUsuario = async () => {
       try {
         // ✅ Usa o hook com interceptor de token
-        const response = await axiosPrivate.get(`/usuarios/${auth.user}`);
+        const response = await axiosPrivate.get(
+          `/usuario/${context.usuarioId}`,
+        );
 
         if (isMounted) {
           // ✅ Acessa response.data.data (ResponseDTO encapsula os dados)

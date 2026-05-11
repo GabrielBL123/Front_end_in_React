@@ -28,14 +28,25 @@ const Login = () => {
         },
       );
 
-      const accessToken = response?.data?.token;
-      const roles = response?.data?.roles || [];
-
+      const accessToken = response?.data?.data?.token; // Response -> ResponseDTO -> LoginResponseDTO -> token
+      const roles = response?.data?.data?.roles || [];
+      const nome = response?.data?.data?.nome;
+      //const empresaNome = response?.data?.data?.empresaNome;
+      const empresaId = response?.data?.data?.empresaId;
+      const usuarioId = response?.data?.data?.usuarioId;
       // ✅ Salva no contexto
-      setAuth({ user, pwd, roles, accessToken });
+      setAuth({
+        user,
+        roles,
+        accessToken,
+        nome,
+        //empresaNome,
+        empresaId,
+        usuarioId,
+      });
 
       // ✅ Salva no localStorage para o fetch usar
-      localStorage.setItem("token", accessToken);
+      //localStorage.setItem("token", accessToken);  // vunaravel para ataques XSS, melhor usar cookies httpOnly
 
       setUser("");
       setPwd("");

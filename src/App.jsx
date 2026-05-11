@@ -20,7 +20,7 @@ import AvaliacoesMensais from "./components/AvaliacoesMensais";
 
 const Roles = {
   User: "USER",
-  Owner: "OWNER",
+  Rh: "RH",
   Admin: "ADMIN",
 };
 
@@ -31,38 +31,37 @@ function App() {
         {/* =========================================
             ROTAS PÚBLICAS (Acesso livre para testes)
             ========================================= */}
+
         <Route index element={<TelaAdmin />} />
         <Route path="home" element={<HomeScreen />} />
         <Route path="login" element={<Login />} />
         <Route path="unauthorized" element={<Unauthorized />} />
 
-        {/* MOVEMOS PARA CÁ: Agora você pode clicar no botão da TelaAdmin e entrar aqui direto */}
-        <Route path="cadastro-rh" element={<CadastroRH />} />
-
-        <Route
-          element={<RequireAuth allowedRoles={[Roles.Owner, Roles.Admin]} />}
-        >
+        {/*///////////////////////////////////ADMIN E RH//////////////////////////////////////////////////*/}
+        <Route element={<RequireAuth allowedRoles={[Roles.Rh, Roles.Admin]} />}>
           <Route
             path="CadastroFuncionarios"
             element={<Cadastrofuncionarios />}
           />
           <Route path="empresa" element={<CompanyForm />} />
           <Route path="users" element={<Users />} />
-          <Route path="criar-setores" element={<CriaSetores />} />
           <Route path="status" element={<Status />} />
           <Route path="cria-questionario" element={<CriaQuestionario />} />
-          <Route path="/avaliacoes" element={<AvaliacoesMensais />} />
-        </Route>
-
-        <Route
-          element={
-            <RequireAuth
-              allowedRoles={[Roles.User, Roles.Admin, Roles.Owner]}
-            />
-          }
-        >
+          <Route path="avaliacoes" element={<AvaliacoesMensais />} />
           <Route path="menu" element={<Menu />} />
           <Route path="perfil" element={<Perfil />} />
+        </Route>
+
+        {/* ///////////////////////////////RH///////////////////////////////////////////////// */}
+        <Route element={<RequireAuth allowedRoles={[Roles.Rh]} />}>
+          <Route path="criar-setores" element={<CriaSetores />} />
+        </Route>
+        {/* ///////////////////////////////ADMIN///////////////////////////////////////////////// */}
+        <Route element={<RequireAuth allowedRoles={[Roles.Admin]} />}>
+          <Route path="cadastro-rh" element={<CadastroRH />} />
+        </Route>
+        {/* ///////////////////////////////FUNCIONÁRIO///////////////////////////////////////////////// */}
+        <Route element={<RequireAuth allowedRoles={[Roles.User]} />}>
           <Route path="questionario" element={<Questionario />} />
         </Route>
       </Route>
