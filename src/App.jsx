@@ -17,6 +17,7 @@ import Status from "./components/Status";
 import CriaQuestionario from "./components/CriaQuestionario";
 import TelaAdmin from "./components/TelaAdmin";
 import AvaliacoesMensais from "./components/AvaliacoesMensais";
+import VerEmpresas from "./components/VerEmpresas";
 
 const Roles = {
   User: "USER",
@@ -31,19 +32,16 @@ function App() {
         {/* =========================================
             ROTAS PÚBLICAS (Acesso livre para testes)
             ========================================= */}
-
         <Route index element={<TelaAdmin />} />
         <Route path="home" element={<HomeScreen />} />
         <Route path="login" element={<Login />} />
         <Route path="unauthorized" element={<Unauthorized />} />
-        <Route path="cadastro-rh" element={<CadastroRH />} />
+        <Route path="cadastro-rh" element={<CadastroRH />} />               
+        <Route path="ver-empresas" element={<VerEmpresas />} />
 
         {/*///////////////////////////////////ADMIN E RH//////////////////////////////////////////////////*/}
         <Route element={<RequireAuth allowedRoles={[Roles.Rh, Roles.Admin]} />}>
-          <Route
-            path="CadastroFuncionarios"
-            element={<Cadastrofuncionarios />}
-          />
+          <Route path="CadastroFuncionarios" element={<Cadastrofuncionarios />} />
           <Route path="empresa" element={<CompanyForm />} />
           <Route path="users" element={<Users />} />
           <Route path="status" element={<Status />} />
@@ -57,10 +55,7 @@ function App() {
         <Route element={<RequireAuth allowedRoles={[Roles.Rh]} />}>
           <Route path="criar-setores" element={<CriaSetores />} />
         </Route>
-        {/* ///////////////////////////////ADMIN///////////////////////////////////////////////// */}
-        <Route element={<RequireAuth allowedRoles={[Roles.Admin]} />}>
-          <Route path="cadastro-rh" element={<CadastroRH />} />
-        </Route>
+              
         {/* ///////////////////////////////FUNCIONÁRIO///////////////////////////////////////////////// */}
         <Route element={<RequireAuth allowedRoles={[Roles.User]} />}>
           <Route path="questionario" element={<Questionario />} />
