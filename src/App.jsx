@@ -32,11 +32,9 @@ function App() {
             ROTAS PÚBLICAS (Acesso livre para testes)
             ========================================= */}
 
-        <Route index element={<TelaAdmin />} />
-        <Route path="home" element={<HomeScreen />} />
+        <Route index element={<HomeScreen />} />
         <Route path="login" element={<Login />} />
         <Route path="unauthorized" element={<Unauthorized />} />
-        <Route path="cadastro-rh" element={<CadastroRH />} />
 
         {/*///////////////////////////////////ADMIN E RH//////////////////////////////////////////////////*/}
         <Route element={<RequireAuth allowedRoles={[Roles.Rh, Roles.Admin]} />}>
