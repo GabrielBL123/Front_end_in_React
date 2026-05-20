@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
@@ -7,14 +7,13 @@ const Perfil = () => {
   const { auth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
-  const context = useContext(useAuth);
 
+  // Estado enxuto apenas com o e-mail da empresa e o novo CNPJ
   const [dadosBanco, setDadosBanco] = useState({
-    cargo: "",
-    setor: "",
-    tempoDeTrabalho: "",
-    jornada: "",
+    empresaEmail: "",
+    cnpj: "", // Nova variável
   });
+  
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
@@ -22,18 +21,23 @@ const Perfil = () => {
 
     const buscarDadosDoUsuario = async () => {
       try {
-        // ✅ Usa o hook com interceptor de token
-        const response = await axiosPrivate.get(
-          `/usuario/${context.usuarioId}`,
-        );
+        const idDoUsuario = auth?.usuarioId;
+
+        if (!idDoUsuario) {
+          console.error("ID do usuário não encontrado no contexto.");
+          setCarregando(false);
+          return;
+        }
+
+        const response = await axiosPrivate.get(`/usuario/${idDoUsuario}`);
 
         if (isMounted) {
-          // ✅ Acessa response.data.data (ResponseDTO encapsula os dados)
+          const dados = response.data.data;
+          
           setDadosBanco({
-            cargo: response.data.data.cargo,
-            setor: response.data.data.setor,
-            tempoDeTrabalho: response.data.data.tempoDeTrabalho,
-            jornada: response.data.data.jornada,
+            empresaEmail: dados.empresaEmail,
+            // Aqui o React vai tentar ler o 'cnpj' vindo do seu Java
+            cnpj: dados.cnpj || dados.empresaCnpj, 
           });
           setCarregando(false);
         }
@@ -52,19 +56,8 @@ const Perfil = () => {
     };
   }, [auth, axiosPrivate]);
 
-  const formatarData = (dataIso) => {
-    if (!dataIso) return "Não informado";
-    const data = new Date(dataIso);
-    return data.toLocaleDateString("pt-BR");
-  };
-
-  const formatarJornada = (jornadaIso) => {
-    if (!jornadaIso) return "Não informado";
-    return jornadaIso.replace("PT", "").replace("H", " Horas semanais");
-  };
-
   return (
-    <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden">
+    <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden mx-auto my-8">
       <div className="bg-green-600 py-8 flex flex-col items-center">
         <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center text-green-700 text-4xl font-extrabold shadow-lg mb-4">
           {auth?.user ? auth.user.charAt(0).toUpperCase() : "U"}
@@ -86,7 +79,7 @@ const Perfil = () => {
                 <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
                   Usuário (Login)
                 </span>
-                <span className="text-lg font-medium text-gray-800 mt-1">
+                <span className="text-lg font-medium text-gray-800 mt-1 truncate">
                   {auth?.user || "Não informado"}
                 </span>
               </div>
@@ -105,46 +98,25 @@ const Perfil = () => {
 
             <hr className="border-gray-100" />
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                  Cargo
-                </span>
-                <span className="text-lg font-medium text-gray-800 mt-1">
-                  {dadosBanco.cargo || "Não informado"}
-                </span>
-              </div>
-
-              <div className="flex flex-col">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                  Setor
-                </span>
-                <span className="text-lg font-medium text-gray-800 mt-1">
-                  {dadosBanco.setor || "Não informado"}
-                </span>
-              </div>
+            <div className="flex flex-col">
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                E-mail da Empresa
+              </span>
+              <span className="text-lg font-bold text-green-700 mt-1">
+                {dadosBanco.empresaEmail || "Não informado"}
+              </span>
             </div>
 
             <hr className="border-gray-100" />
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                  Admissão
-                </span>
-                <span className="text-lg font-medium text-gray-800 mt-1">
-                  {formatarData(dadosBanco.tempoDeTrabalho)}
-                </span>
-              </div>
-
-              <div className="flex flex-col">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                  Jornada
-                </span>
-                <span className="text-lg font-medium text-gray-800 mt-1">
-                  {formatarJornada(dadosBanco.jornada)}
-                </span>
-              </div>
+            {/* Novo bloco exibindo o CNPJ */}
+            <div className="flex flex-col">
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                CNPJ da Empresa
+              </span>
+              <span className="text-lg font-medium text-gray-800 mt-1">
+                {dadosBanco.cnpj || "Não informado"}
+              </span>
             </div>
           </>
         )}
@@ -152,10 +124,10 @@ const Perfil = () => {
         <hr className="border-gray-200 mt-2 mb-2" />
 
         <button
-          onClick={() => navigate("/menu")}
+          onClick={() => navigate(-1)}
           className="w-full py-4 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-lg transition-all duration-300 hover:-translate-y-1"
         >
-          Voltar ao Menu
+          Voltar
         </button>
       </div>
     </div>

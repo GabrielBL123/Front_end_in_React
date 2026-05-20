@@ -2,7 +2,6 @@ import { useRef, useState, useEffect } from "react";
 import axios from "../api/axios";
 import { useNavigate } from "react-router-dom";
 
-// ATUALIZAÇÃO: Nova rota específica para criar RH/Empresa
 const REGISTER_URL = "/admin/criar-rh-empresa";
 
 const CadastroRH = () => {
@@ -12,12 +11,12 @@ const CadastroRH = () => {
   const emailRef = useRef();
 
   // Dados do Administrador (RH)
-  const [login, setLogin] = useState(""); // Usado para o e-mail de acesso
+  const [login, setLogin] = useState("");
   const [nome, setNome] = useState("");
   const [pwd, setPwd] = useState("");
   const [matchPwd, setMatchPwd] = useState("");
 
-  // Dados da Empresa (Exigidos pelo novo DTO)
+  // Dados da Empresa
   const [cnpj, setCnpj] = useState("");
   const [nomeEmpresa, setNomeEmpresa] = useState("");
   const [emailEmpresa, setEmailEmpresa] = useState("");
@@ -42,7 +41,7 @@ const CadastroRH = () => {
     }
 
     try {
-      // ATUALIZAÇÃO: Payload formatado exatamente como o RegistrarRhDTO.java
+      // 1️⃣ PRIMEIRO PASSO: SALVAR O CADASTRO NO BANCO
       const payload = JSON.stringify({
         nome: nome,
         login: login,
@@ -57,10 +56,24 @@ const CadastroRH = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        withCredentials: true, // Mantido caso haja necessidade de cookies de auth futuros
+        withCredentials: true, 
       });
 
       if (response.status === 200 || response.status === 201) {
+        
+        // 2️⃣ SEGUNDO PASSO: DISPARAR O E-MAIL AUTOMATICAMENTE
+        try {
+          await axios.post("auth/enviar_link_email", JSON.stringify({ email: login }), {
+            headers: {
+              "Content-Type": "application/json",
+            }
+          });
+          console.log("E-mail enviado com sucesso!");
+        } catch (emailErr) {
+          console.error("Falha ao enviar o e-mail: ", emailErr);
+        }
+
+        // 3️⃣ FINALIZAR E MOSTRAR TELA DE SUCESSO
         setSuccess(true);
         setLogin("");
         setNome("");
@@ -79,12 +92,12 @@ const CadastroRH = () => {
         setErrMsg(
           err.response.data?.message ||
             err.response.data ||
-            "Erro 400: Verifique se todos os campos foram preenchidos corretamente.",
+            "Erro 400: Verifique se todos os campos foram preenchidos corretamente."
         );
       } else if (err.response?.status === 403) {
         setErrMsg("Sem permissão para realizar esta ação.");
       } else {
-        setErrMsg("Falha no registo.");
+        setErrMsg("Falha no registro.");
       }
       errRef.current.focus();
     }
@@ -98,7 +111,7 @@ const CadastroRH = () => {
             Sucesso!
           </h1>
           <p className="text-xl text-gray-700 mb-4">
-            Registo de RH e Empresa concluído.
+            Registro de RH e Empresa concluído.
           </p>
           <p className="text-lg text-blue-600 font-medium mb-6">
             O link de acesso foi enviado com sucesso para o e-mail informado.
@@ -107,14 +120,14 @@ const CadastroRH = () => {
             onClick={() => navigate("/")}
             className="px-8 py-3 bg-green-600 hover:bg-green-500 text-white text-lg font-bold rounded-lg shadow-md transition-all"
           >
-            Ir para o Menu
+            Voltar ao Painel Admin
           </button>
         </div>
       ) : (
         <div className="w-full max-w-4xl bg-white p-10 md:p-14 rounded-3xl shadow-2xl my-8 mx-auto">
           <div className="flex justify-center mb-8 border-b-2 border-green-100 pb-4">
             <h2 className="text-3xl md:text-4xl font-extrabold text-green-700">
-              Registar RH e Empresa
+              Registrar RH e Empresa
             </h2>
           </div>
 
@@ -132,12 +145,8 @@ const CadastroRH = () => {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* 1. NOME COMPLETO (RH) */}
               <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="nome"
-                  className="font-semibold text-gray-700 text-lg"
-                >
+                <label htmlFor="nome" className="font-semibold text-gray-700 text-lg">
                   Nome Completo (Admin):
                 </label>
                 <input
@@ -151,12 +160,8 @@ const CadastroRH = () => {
                 />
               </div>
 
-              {/* 2. E-MAIL DE ACESSO (Login do RH) */}
               <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="login"
-                  className="font-semibold text-gray-700 text-lg"
-                >
+                <label htmlFor="login" className="font-semibold text-gray-700 text-lg">
                   E-mail de Acesso (Login):
                 </label>
                 <input
@@ -171,12 +176,8 @@ const CadastroRH = () => {
                 />
               </div>
 
-              {/* 3. NOME DA EMPRESA */}
               <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="nomeEmpresa"
-                  className="font-semibold text-gray-700 text-lg"
-                >
+                <label htmlFor="nomeEmpresa" className="font-semibold text-gray-700 text-lg">
                   Nome da Empresa:
                 </label>
                 <input
@@ -190,12 +191,8 @@ const CadastroRH = () => {
                 />
               </div>
 
-              {/* 4. CNPJ DA EMPRESA */}
               <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="cnpj"
-                  className="font-semibold text-gray-700 text-lg"
-                >
+                <label htmlFor="cnpj" className="font-semibold text-gray-700 text-lg">
                   CNPJ da Empresa:
                 </label>
                 <input
@@ -209,12 +206,8 @@ const CadastroRH = () => {
                 />
               </div>
 
-              {/* 5. E-MAIL COMERCIAL DA EMPRESA */}
               <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="emailEmpresa"
-                  className="font-semibold text-gray-700 text-lg"
-                >
+                <label htmlFor="emailEmpresa" className="font-semibold text-gray-700 text-lg">
                   E-mail Comercial (Empresa):
                 </label>
                 <input
@@ -228,15 +221,10 @@ const CadastroRH = () => {
                 />
               </div>
 
-              {/* DIV VAZIA PARA ALINHAR AS SENHAS NO FINAL DA GRID */}
               <div className="hidden md:block"></div>
 
-              {/* 6. SENHA */}
               <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="password"
-                  className="font-semibold text-gray-700 text-lg"
-                >
+                <label htmlFor="password" className="font-semibold text-gray-700 text-lg">
                   Senha Temporária:
                 </label>
                 <input
@@ -249,12 +237,8 @@ const CadastroRH = () => {
                 />
               </div>
 
-              {/* 7. CONFIRMAR SENHA */}
               <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="confirm_pwd"
-                  className="font-semibold text-gray-700 text-lg"
-                >
+                <label htmlFor="confirm_pwd" className="font-semibold text-gray-700 text-lg">
                   Confirmar Senha:
                 </label>
                 <input
@@ -273,7 +257,7 @@ const CadastroRH = () => {
                 type="submit"
                 className="w-full py-4 px-6 bg-green-600 hover:bg-green-500 text-white text-xl font-bold rounded-lg shadow-md transition-all"
               >
-                Registar Empresa e RH
+                Registrar Empresa e RH
               </button>
 
               <button
@@ -281,7 +265,7 @@ const CadastroRH = () => {
                 onClick={() => navigate("/")}
                 className="w-full py-3 px-6 bg-gray-100 hover:bg-gray-200 text-gray-600 text-lg font-bold rounded-lg transition-all border border-gray-300"
               >
-                Cancelar
+                Voltar ao Painel Admin
               </button>
             </div>
           </form>

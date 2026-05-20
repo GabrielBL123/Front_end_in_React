@@ -28,25 +28,28 @@ const Login = () => {
         },
       );
 
-      const accessToken = response?.data?.data?.token; // Response -> ResponseDTO -> LoginResponseDTO -> token
-      const roles = response?.data?.data?.roles || [];
-      const nome = response?.data?.data?.nome;
-      //const empresaNome = response?.data?.data?.empresaNome;
-      const empresaId = response?.data?.data?.empresaId;
-      const usuarioId = response?.data?.data?.usuarioId;
-      // ✅ Salva no contexto
+      // Pega os dados dentro do ResponseDTO
+      const payload = response?.data?.data || response?.data;
+
+      const accessToken = payload?.token;
+      const roles = payload?.roles || [];
+      const nome = payload?.nome;
+      
+      // ✅ AGORA SIM! Escrito exatamente igual ao seu Record do Java (com 'ID' maiúsculo)
+      const empresaNome = payload?.empresaNome;
+      const empresaId = payload?.empresaID; 
+      const usuarioId = payload?.usuarioID; 
+
+      // ✅ Salva no contexto global (podemos manter o nome da variável local com 'd' minúsculo para padronizar no React)
       setAuth({
         user,
         roles,
         accessToken,
         nome,
-        //empresaNome,
+        empresaNome,
         empresaId,
-        usuarioId,
+        usuarioId, 
       });
-
-      // ✅ Salva no localStorage para o fetch usar
-      //localStorage.setItem("token", accessToken);  // vunaravel para ataques XSS, melhor usar cookies httpOnly
 
       setUser("");
       setPwd("");
