@@ -20,6 +20,7 @@ const CadastroRH = () => {
   const [cnpj, setCnpj] = useState("");
   const [nomeEmpresa, setNomeEmpresa] = useState("");
   const [emailEmpresa, setEmailEmpresa] = useState("");
+  const [telefoneEmpresa, setTelefoneEmpresa] = useState(""); 
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -30,7 +31,7 @@ const CadastroRH = () => {
 
   useEffect(() => {
     setErrMsg("");
-  }, [login, nome, pwd, matchPwd, cnpj, nomeEmpresa, emailEmpresa]);
+  }, [login, nome, pwd, matchPwd, cnpj, nomeEmpresa, emailEmpresa, telefoneEmpresa]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,6 +51,7 @@ const CadastroRH = () => {
         cnpj: cnpj,
         nomeEmpresa: nomeEmpresa,
         emailEmpresa: emailEmpresa,
+        telefoneEmpresa: telefoneEmpresa, 
       });
 
       const response = await axios.post(REGISTER_URL, payload, {
@@ -85,6 +87,9 @@ const CadastroRH = () => {
         setCnpj("");
         setNomeEmpresa("");
         setEmailEmpresa("");
+        setTelefoneEmpresa(""); 
+        
+        // Cronômetro automático removido daqui!
       }
     } catch (err) {
       if (!err?.response) {
@@ -116,11 +121,12 @@ const CadastroRH = () => {
           <p className="text-xl text-gray-700 mb-4">
             Registro de RH e Empresa concluído.
           </p>
-          <p className="text-lg text-blue-600 font-medium mb-6">
+          <p className="text-lg text-blue-600 font-medium mb-8">
             O link de acesso foi enviado com sucesso para o e-mail informado.
           </p>
+          {/* Mensagem de carregamento removida. O botão aguarda o clique do usuário: */}
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/menu")}
             className="px-8 py-3 bg-green-600 hover:bg-green-500 text-white text-lg font-bold rounded-lg shadow-md transition-all"
           >
             Voltar ao Painel Admin
@@ -239,7 +245,20 @@ const CadastroRH = () => {
                 />
               </div>
 
-              <div className="hidden md:block"></div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="telefoneEmpresa" className="font-semibold text-gray-700 text-lg">
+                  Telefone da Empresa:
+                </label>
+                <input
+                  type="text"
+                  id="telefoneEmpresa"
+                  onChange={(e) => setTelefoneEmpresa(e.target.value)}
+                  value={telefoneEmpresa}
+                  required
+                  placeholder="Ex: (00) 00000-0000"
+                  className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
+                />
+              </div>
 
               <div className="flex flex-col gap-2">
                 <label
@@ -286,7 +305,7 @@ const CadastroRH = () => {
 
               <button
                 type="button"
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/menu")}
                 className="w-full py-3 px-6 bg-gray-100 hover:bg-gray-200 text-gray-600 text-lg font-bold rounded-lg transition-all border border-gray-300"
               >
                 Voltar ao Painel Admin

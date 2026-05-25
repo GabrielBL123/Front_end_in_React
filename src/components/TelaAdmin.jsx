@@ -52,23 +52,23 @@ const TelaAdmin = () => {
             </p>
           </button>
 
-          {/* 2. Ver Quem Respondeu (Corrigido para /status) */}
+          {/* 2. Ver Empresas (Nova opção substituindo o Status de Respostas) */}
           <button
-            onClick={() => navigate("/status")}
+            onClick={() => navigate("/ver-empresas")}
             className="flex flex-col items-center justify-center p-8 bg-white rounded-2xl shadow-md hover:shadow-xl hover:scale-105 transition-all border-t-4 border-purple-500 group"
           >
             <div className="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-4 group-hover:bg-purple-600 group-hover:text-white transition-colors">
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-gray-800">Ver Quem Respondeu</h2>
+            <h2 className="text-xl font-bold text-gray-800">Ver Empresas</h2>
             <p className="text-sm text-gray-500 mt-2 text-center">
-              Acompanhe o engajamento e métricas
+              Acompanhe e gerencie as empresas cadastradas no sistema
             </p>
           </button>
 
-          {/* 3. Cadastro RH (Corrigido e Validado) */}
+          {/* 3. Cadastro RH */}
           <button
             onClick={() => navigate("/cadastro-rh")}
             className="flex flex-col items-center justify-center p-8 bg-white rounded-2xl shadow-md hover:shadow-xl hover:scale-105 transition-all border-t-4 border-green-500 group"
