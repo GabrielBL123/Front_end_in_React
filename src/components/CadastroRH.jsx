@@ -20,7 +20,7 @@ const CadastroRH = () => {
   const [cnpj, setCnpj] = useState("");
   const [nomeEmpresa, setNomeEmpresa] = useState("");
   const [emailEmpresa, setEmailEmpresa] = useState("");
-  const [telefoneEmpresa, setTelefoneEmpresa] = useState(""); // ✨ Novo estado para o Telefone
+  const [telefoneEmpresa, setTelefoneEmpresa] = useState(""); 
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -47,11 +47,11 @@ const CadastroRH = () => {
         nome: nome,
         login: login,
         password: pwd,
-        role: "ADMIN",
+        role: "RH",
         cnpj: cnpj,
         nomeEmpresa: nomeEmpresa,
         emailEmpresa: emailEmpresa,
-        telefoneEmpresa: telefoneEmpresa, // ✨ Adicionado ao envio de dados
+        telefoneEmpresa: telefoneEmpresa, 
       });
 
       const response = await axios.post(REGISTER_URL, payload, {
@@ -84,7 +84,9 @@ const CadastroRH = () => {
         setCnpj("");
         setNomeEmpresa("");
         setEmailEmpresa("");
-        setTelefoneEmpresa(""); // ✨ Limpar após sucesso
+        setTelefoneEmpresa(""); 
+        
+        // Cronômetro automático removido daqui!
       }
     } catch (err) {
       if (!err?.response) {
@@ -116,11 +118,12 @@ const CadastroRH = () => {
           <p className="text-xl text-gray-700 mb-4">
             Registro de RH e Empresa concluído.
           </p>
-          <p className="text-lg text-blue-600 font-medium mb-6">
+          <p className="text-lg text-blue-600 font-medium mb-8">
             O link de acesso foi enviado com sucesso para o e-mail informado.
           </p>
+          {/* Mensagem de carregamento removida. O botão aguarda o clique do usuário: */}
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/menu")}
             className="px-8 py-3 bg-green-600 hover:bg-green-500 text-white text-lg font-bold rounded-lg shadow-md transition-all"
           >
             Voltar ao Painel Admin
@@ -224,7 +227,6 @@ const CadastroRH = () => {
                 />
               </div>
 
-              {/* ✨ Novo Campo de Telefone substituindo a antiga Div vazia */}
               <div className="flex flex-col gap-2">
                 <label htmlFor="telefoneEmpresa" className="font-semibold text-gray-700 text-lg">
                   Telefone da Empresa:
@@ -279,7 +281,7 @@ const CadastroRH = () => {
 
               <button
                 type="button"
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/menu")}
                 className="w-full py-3 px-6 bg-gray-100 hover:bg-gray-200 text-gray-600 text-lg font-bold rounded-lg transition-all border border-gray-300"
               >
                 Voltar ao Painel Admin

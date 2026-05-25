@@ -35,11 +35,13 @@ function App() {
         <Route index element={<HomeScreen />} />
         <Route path="login" element={<Login />} />
         <Route path="unauthorized" element={<Unauthorized />} />
+        <Route path="tela-admin" element={<TelaAdmin />} />
 
         {/*///////////////////////////////////ADMIN E RH//////////////////////////////////////////////////*/}
         <Route element={<RequireAuth allowedRoles={[Roles.Rh, Roles.Admin]} />}>
           <Route path="CadastroFuncionarios" element={<Cadastrofuncionarios />} />
-          
+          <Route path="cadastro-rh" element={<CadastroRH />} />
+          <Route path="ver-empresas" element={<VerEmpresas />} />
           <Route path="users" element={<Users />} />
           <Route path="status" element={<Status />} />
           <Route path="cria-questionario" element={<CriaQuestionario />} />
