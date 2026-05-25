@@ -6,7 +6,6 @@ import Menu from "./components/Menu";
 import RequireAuth from "./components/RequireAuth";
 import Unauthorized from "./components/Unauthorized";
 import Users from "./components/Users";
-import CompanyForm from "./components/CompanyForm";
 import Perfil from "./components/Perfil";
 import Questionario from "./components/Questionario";
 import HomeScreen from "./components/HomeScreen";
@@ -32,17 +31,15 @@ function App() {
         {/* =========================================
             ROTAS PÚBLICAS (Acesso livre para testes)
             ========================================= */}
-        <Route index element={<TelaAdmin />} />
-        <Route path="home" element={<HomeScreen />} />
+
+        <Route index element={<HomeScreen />} />
         <Route path="login" element={<Login />} />
         <Route path="unauthorized" element={<Unauthorized />} />
-        <Route path="cadastro-rh" element={<CadastroRH />} />               
-        <Route path="ver-empresas" element={<VerEmpresas />} />
 
         {/*///////////////////////////////////ADMIN E RH//////////////////////////////////////////////////*/}
         <Route element={<RequireAuth allowedRoles={[Roles.Rh, Roles.Admin]} />}>
           <Route path="CadastroFuncionarios" element={<Cadastrofuncionarios />} />
-          <Route path="empresa" element={<CompanyForm />} />
+          
           <Route path="users" element={<Users />} />
           <Route path="status" element={<Status />} />
           <Route path="cria-questionario" element={<CriaQuestionario />} />
