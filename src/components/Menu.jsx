@@ -41,7 +41,7 @@ const Menu = () => {
             <p className="text-xl text-gray-500 mt-2">
               Bem-vindo(a),{" "}
               <span className="font-bold text-green-600">
-                {auth?.user || "RH"}
+                {auth?.user || "Admin"}
               </span>
               .
             </p>

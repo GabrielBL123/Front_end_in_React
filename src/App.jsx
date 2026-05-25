@@ -45,7 +45,7 @@ function App() {
           <Route path="empresa" element={<CompanyForm />} />
           <Route path="users" element={<Users />} />
           <Route path="status" element={<Status />} />
-          <Route path="cria-questionario" element={<CriaQuestionario />} />
+          <Route path="criar-avaliacoes" element={<CriaQuestionario />} />
           <Route path="avaliacoes" element={<AvaliacoesMensais />} />
           <Route path="menu" element={<Menu />} />
           <Route path="perfil" element={<Perfil />} />

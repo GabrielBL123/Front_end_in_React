@@ -46,7 +46,7 @@ const CadastroRH = () => {
         nome: nome,
         login: login,
         password: pwd,
-        role: "ADMIN",
+        role: "RH",
         cnpj: cnpj,
         nomeEmpresa: nomeEmpresa,
         emailEmpresa: emailEmpresa,
@@ -56,18 +56,21 @@ const CadastroRH = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        withCredentials: true, 
+        withCredentials: true,
       });
 
       if (response.status === 200 || response.status === 201) {
-        
         // 2️⃣ SEGUNDO PASSO: DISPARAR O E-MAIL AUTOMATICAMENTE
         try {
-          await axios.post("auth/enviar_link_email", JSON.stringify({ email: login }), {
-            headers: {
-              "Content-Type": "application/json",
-            }
-          });
+          await axios.post(
+            "auth/enviar_link_email",
+            JSON.stringify({ email: login }),
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            },
+          );
           console.log("E-mail enviado com sucesso!");
         } catch (emailErr) {
           console.error("Falha ao enviar o e-mail: ", emailErr);
@@ -92,7 +95,7 @@ const CadastroRH = () => {
         setErrMsg(
           err.response.data?.message ||
             err.response.data ||
-            "Erro 400: Verifique se todos os campos foram preenchidos corretamente."
+            "Erro 400: Verifique se todos os campos foram preenchidos corretamente.",
         );
       } else if (err.response?.status === 403) {
         setErrMsg("Sem permissão para realizar esta ação.");
@@ -146,7 +149,10 @@ const CadastroRH = () => {
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col gap-2">
-                <label htmlFor="nome" className="font-semibold text-gray-700 text-lg">
+                <label
+                  htmlFor="nome"
+                  className="font-semibold text-gray-700 text-lg"
+                >
                   Nome Completo (Admin):
                 </label>
                 <input
@@ -161,7 +167,10 @@ const CadastroRH = () => {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="login" className="font-semibold text-gray-700 text-lg">
+                <label
+                  htmlFor="login"
+                  className="font-semibold text-gray-700 text-lg"
+                >
                   E-mail de Acesso (Login):
                 </label>
                 <input
@@ -177,7 +186,10 @@ const CadastroRH = () => {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="nomeEmpresa" className="font-semibold text-gray-700 text-lg">
+                <label
+                  htmlFor="nomeEmpresa"
+                  className="font-semibold text-gray-700 text-lg"
+                >
                   Nome da Empresa:
                 </label>
                 <input
@@ -192,7 +204,10 @@ const CadastroRH = () => {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="cnpj" className="font-semibold text-gray-700 text-lg">
+                <label
+                  htmlFor="cnpj"
+                  className="font-semibold text-gray-700 text-lg"
+                >
                   CNPJ da Empresa:
                 </label>
                 <input
@@ -207,7 +222,10 @@ const CadastroRH = () => {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="emailEmpresa" className="font-semibold text-gray-700 text-lg">
+                <label
+                  htmlFor="emailEmpresa"
+                  className="font-semibold text-gray-700 text-lg"
+                >
                   E-mail Comercial (Empresa):
                 </label>
                 <input
@@ -224,7 +242,10 @@ const CadastroRH = () => {
               <div className="hidden md:block"></div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="password" className="font-semibold text-gray-700 text-lg">
+                <label
+                  htmlFor="password"
+                  className="font-semibold text-gray-700 text-lg"
+                >
                   Senha Temporária:
                 </label>
                 <input
@@ -238,7 +259,10 @@ const CadastroRH = () => {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="confirm_pwd" className="font-semibold text-gray-700 text-lg">
+                <label
+                  htmlFor="confirm_pwd"
+                  className="font-semibold text-gray-700 text-lg"
+                >
                   Confirmar Senha:
                 </label>
                 <input
