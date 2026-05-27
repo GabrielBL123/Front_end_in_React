@@ -14,7 +14,7 @@ import CadastroRH from "./components/CadastroRH";
 import CriaSetores from "./components/CriaSetores";
 import Status from "./components/Status";
 import CriaQuestionario from "./components/CriaQuestionario";
-import TelaAdmin from "./components/TelaAdmin";
+
 import AvaliacoesMensais from "./components/AvaliacoesMensais";
 import VerEmpresas from "./components/VerEmpresas";
 
@@ -35,7 +35,6 @@ function App() {
         <Route index element={<HomeScreen />} />
         <Route path="login" element={<Login />} />
         <Route path="unauthorized" element={<Unauthorized />} />
-        <Route path="tela-admin" element={<TelaAdmin />} />
 
         {/*///////////////////////////////////ADMIN E RH//////////////////////////////////////////////////*/}
         <Route element={<RequireAuth allowedRoles={[Roles.Rh, Roles.Admin]} />}>
