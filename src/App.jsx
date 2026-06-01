@@ -9,7 +9,8 @@ import Users from "./components/Users";
 import Perfil from "./components/Perfil";
 import Questionario from "./components/Questionario";
 import HomeScreen from "./components/HomeScreen";
-import Cadastrofuncionarios from "./components/CadastroFuncionarios";
+// ✨ CORREÇÃO 1: Faltava importar o Cadastro de Funcionários!
+import Cadastrofuncionarios from "./components/CadastroFuncionarios"; 
 import CadastroRH from "./components/CadastroRH";
 import CriaSetores from "./components/CriaSetores";
 import Status from "./components/Status";
@@ -30,10 +31,10 @@ function App() {
         {/* =========================================
             ROTAS PÚBLICAS (Acesso livre para testes)
             ========================================= */}
-
-        <Route index element={<HomeScreen />} />
         <Route path="login" element={<Login />} />
         <Route path="unauthorized" element={<Unauthorized />} />
+        <Route path="home-screen/:token" element={<HomeScreen />} />
+        <Route path="questionario/:token" element={<Questionario />} />
 
         {/*///////////////////////////////////ADMIN E RH//////////////////////////////////////////////////*/}
         <Route element={<RequireAuth allowedRoles={[Roles.Rh, Roles.Admin]} />}>
@@ -61,10 +62,6 @@ function App() {
           <Route path="criar-setores" element={<CriaSetores />} />
         </Route>
 
-        {/* ///////////////////////////////FUNCIONÁRIO///////////////////////////////////////////////// */}
-        <Route element={<RequireAuth allowedRoles={[Roles.User]} />}>
-          <Route path="questionario" element={<Questionario />} />
-        </Route>
       </Route>
     </Routes>
   );

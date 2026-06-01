@@ -1,8 +1,12 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+// ✨ 1. Importe o useParams aqui em cima!
+import { useNavigate, useSearchParams, useParams } from "react-router-dom";
 
 const VideoExemplo = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  
+  // ✨ 2. Puxe o token da URL para dentro do componente
+  const { token } = useParams(); 
 
   const userLogin = searchParams.get("login");
   const userCargo = searchParams.get("cargo");
@@ -103,12 +107,11 @@ const VideoExemplo = () => {
 
             <div className="flex justify-start mt-6">
               <button
-                onClick={() =>
-                  navigate(userLogin ? `/login?login=${userLogin}` : "/login")
-                }
+                // ✨ 3. Agora o token existe e será repassado corretamente!
+                onClick={() => navigate(`/questionario/${token}`)}
                 className="px-10 py-4 bg-green-600 hover:bg-green-500 text-white text-xl font-bold rounded-xl shadow-lg transition-all duration-300 hover:-translate-y-1"
               >
-                Acessar o Sistema
+                Começar Questionário
               </button>
             </div>
           </div>
