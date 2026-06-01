@@ -4,7 +4,7 @@ import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import "../tailwind.css";
 
-const CriaQuestionario = () => {
+const CriarAvaliacao = () => {
   const [avaliacoes, setAvaliacoes] = useState([]);
   const [message, setMessage] = useState("");
   const { auth } = useAuth();
@@ -114,6 +114,7 @@ const CriaQuestionario = () => {
 
       await axios.put(`/avaliacoes-mensais/${editingId}`, formData, {
         headers: { Authorization: `Bearer ${auth?.accessToken}` },
+        withCredentials: true,
       });
 
       setEditingId(null);
@@ -143,6 +144,7 @@ const CriaQuestionario = () => {
 
       await axios.delete(`/avaliacoes-mensais/${id}`, {
         headers: { Authorization: `Bearer ${auth?.accessToken}` },
+        withCredentials: true,
       });
 
       await buscarAvaliacoes(pageInfo.number, pageInfo.size);
@@ -157,9 +159,10 @@ const CriaQuestionario = () => {
   const editarAvaliacao = (avaliacao) => {
     setEditingId(avaliacao.id);
     setFormData({
-      competencia: avaliacao.competencia,
-      status: avaliacao.status,
+      competencia: "",
+      cnpj: "",
     });
+
     navigate(`/avaliacoes/${avaliacao.id}`);
   };
 
@@ -282,4 +285,4 @@ const CriaQuestionario = () => {
   );
 };
 
-export default CriaQuestionario;
+export default CriarAvaliacao;

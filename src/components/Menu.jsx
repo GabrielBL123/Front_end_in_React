@@ -74,7 +74,7 @@ const Menu = () => {
             title="Criar/Ver Avaliações"
             description="Cadastre e gerencie as avaliações da empresa."
             icon="🏢"
-            onClick={() => navigate("/criar-avaliacoes")}
+            onClick={() => navigate("/criar-avaliacao")}
           />
         </div>
       </div>

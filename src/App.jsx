@@ -13,7 +13,7 @@ import Cadastrofuncionarios from "./components/CadastroFuncionarios";
 import CadastroRH from "./components/CadastroRH";
 import CriaSetores from "./components/CriaSetores";
 import Status from "./components/Status";
-import CriaQuestionario from "./components/CriaQuestionario";
+import CriarAvaliacao from "./components/CriarAvaliacao";
 import AvaliacaoDetalhe from "./components/AvaliacaoDetalhe";
 import VerEmpresas from "./components/VerEmpresas";
 
@@ -53,7 +53,7 @@ function App() {
 
         {/* ///////////////////////////////ADMIN/////////////////////////////////////////////////  */}
         <Route element={<RequireAuth allowedRoles={[Roles.Admin]} />}>
-          <Route path="criar-questionario" element={<CriaQuestionario />} />
+          <Route path="criar-avaliacao" element={<CriarAvaliacao />} />
         </Route>
 
         {/* ///////////////////////////////RH///////////////////////////////////////////////// */}
