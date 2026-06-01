@@ -46,7 +46,10 @@ function App() {
           <Route path="users" element={<Users />} />
           <Route path="status" element={<Status />} />
 
-          <Route path="avaliacoes/:id" element={<AvaliacaoDetalhe />} />
+          <Route
+            path="avaliacoes/:avaliacaoId"
+            element={<AvaliacaoDetalhe />}
+          />
           <Route path="menu" element={<Menu />} />
           <Route path="perfil" element={<Perfil />} />
         </Route>
