@@ -9,7 +9,6 @@ import Users from "./components/Users";
 import Perfil from "./components/Perfil";
 import Questionario from "./components/Questionario";
 import HomeScreen from "./components/HomeScreen";
-// ✨ CORREÇÃO 1: Faltava importar o Cadastro de Funcionários!
 import Cadastrofuncionarios from "./components/CadastroFuncionarios"; 
 import CadastroRH from "./components/CadastroRH";
 import CriaSetores from "./components/CriaSetores";
@@ -28,8 +27,12 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
+        
+      
+        <Route index element={<Login />} />
+
         {/* =========================================
-            ROTAS PÚBLICAS (Acesso livre para testes)
+            ROTAS PÚBLICAS (Acesso livre)
             ========================================= */}
         <Route path="login" element={<Login />} />
         <Route path="unauthorized" element={<Unauthorized />} />
@@ -38,19 +41,13 @@ function App() {
 
         {/*///////////////////////////////////ADMIN E RH//////////////////////////////////////////////////*/}
         <Route element={<RequireAuth allowedRoles={[Roles.Rh, Roles.Admin]} />}>
-          <Route
-            path="CadastroFuncionarios"
-            element={<Cadastrofuncionarios />}
-          />
+          <Route path="CadastroFuncionarios" element={<Cadastrofuncionarios />} />
           <Route path="cadastro-rh" element={<CadastroRH />} />
           <Route path="ver-empresas" element={<VerEmpresas />} />
           <Route path="users" element={<Users />} />
           <Route path="status" element={<Status />} />
 
-          <Route
-            path="avaliacoes/:avaliacaoId"
-            element={<AvaliacaoDetalhe />}
-          />
+          <Route path="avaliacoes/:avaliacaoId" element={<AvaliacaoDetalhe />} />
           <Route path="menu" element={<Menu />} />
           <Route path="perfil" element={<Perfil />} />
         </Route>
