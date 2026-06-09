@@ -1,8 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
-import Layout from "./components/Layout";
 import Menu from "./components/Menu";
-
 import RequireAuth from "./components/RequireAuth";
 import Unauthorized from "./components/Unauthorized";
 import Users from "./components/Users";
@@ -10,13 +8,14 @@ import Perfil from "./components/Perfil";
 import Questionario from "./components/Questionario";
 import HomeScreen from "./components/HomeScreen";
 // ✨ CORREÇÃO 1: Faltava importar o Cadastro de Funcionários!
-import Cadastrofuncionarios from "./components/CadastroFuncionarios"; 
+import Cadastrofuncionarios from "./components/CadastroFuncionarios";
 import CadastroRH from "./components/CadastroRH";
 import CriaSetores from "./components/CriaSetores";
 import Status from "./components/Status";
 import CriarAvaliacao from "./components/CriarAvaliacao";
 import AvaliacaoDetalhe from "./components/AvaliacaoDetalhe";
 import VerEmpresas from "./components/VerEmpresas";
+import Layout from "./components/Layout";
 
 const Roles = {
   User: "USER",
@@ -64,7 +63,6 @@ function App() {
         <Route element={<RequireAuth allowedRoles={[Roles.Rh]} />}>
           <Route path="criar-setores" element={<CriaSetores />} />
         </Route>
-
       </Route>
     </Routes>
   );
