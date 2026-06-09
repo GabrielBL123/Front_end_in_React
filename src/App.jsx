@@ -7,12 +7,7 @@ import Users from "./components/Users";
 import Perfil from "./components/Perfil";
 import Questionario from "./components/Questionario";
 import HomeScreen from "./components/HomeScreen";
-<<<<<<< HEAD
-// ✨ CORREÇÃO 1: Faltava importar o Cadastro de Funcionários!
-import Cadastrofuncionarios from "./components/CadastroFuncionarios";
-=======
 import Cadastrofuncionarios from "./components/CadastroFuncionarios"; 
->>>>>>> db165eb1e641a73cac9732a9001431f333a6d0df
 import CadastroRH from "./components/CadastroRH";
 import CriaSetores from "./components/CriaSetores";
 import Status from "./components/Status";
