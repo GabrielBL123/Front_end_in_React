@@ -450,12 +450,12 @@ const Questionario = () => {
       });
     });
 
-    // ✨ Formatação EXATA para o LocalDateTime do Java
+    //  Formatação EXATA para o LocalDateTime do Java
     const dataFormatadaJava = dadosFuncionario.dataAdmissao
       ? `${dadosFuncionario.dataAdmissao}T00:00:00`
       : new Date().toISOString().split(".")[0];
 
-    // ✨ Objeto DTO impecável para casar com RespostaDTO
+    //  Objeto DTO impecável para casar com RespostaDTO
     const payloadDTO = {
       nome: dadosFuncionario.nome,
       login: dadosFuncionario.email,
@@ -547,7 +547,7 @@ const Questionario = () => {
                 name="nome"
                 value={dadosFuncionario.nome}
                 onChange={handleDadosChange}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-black bg-white"
                 required
               />
             </div>
@@ -561,7 +561,7 @@ const Questionario = () => {
                 name="email"
                 value={dadosFuncionario.email}
                 onChange={handleDadosChange}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-black bg-white"
                 required
               />
             </div>
@@ -575,7 +575,7 @@ const Questionario = () => {
                 name="cargo"
                 value={dadosFuncionario.cargo}
                 onChange={handleDadosChange}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-black bg-white"
                 required
               />
             </div>
@@ -589,7 +589,7 @@ const Questionario = () => {
                 name="setor"
                 value={dadosFuncionario.setor}
                 onChange={handleDadosChange}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-black bg-white"
                 required
               />
             </div>
@@ -603,25 +603,10 @@ const Questionario = () => {
                 name="dataAdmissao"
                 value={dadosFuncionario.dataAdmissao}
                 onChange={handleDadosChange}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-gray-700"
+                
+                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-black bg-white"
                 required
               />
-            </div>
-
-            <div className="flex flex-col">
-              <label className="text-sm text-gray-600 font-semibold mb-1">
-                Jornada Diária *
-              </label>
-              <select
-                name="jornada"
-                value={dadosFuncionario.jornada}
-                onChange={handleDadosChange}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-              >
-                <option value="PT4H">4 Horas / Estágio</option>
-                <option value="PT6H">6 Horas</option>
-                <option value="PT8H">8 Horas</option>
-              </select>
             </div>
           </div>
 
