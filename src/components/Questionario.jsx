@@ -580,19 +580,30 @@ const Questionario = () => {
               />
             </div>
 
-            <div className="flex flex-col">
-              <label className="text-sm text-gray-600 font-semibold mb-1">
-                Setor *
-              </label>
-              <input
-                type="text"
-                name="setor"
-                value={dadosFuncionario.setor}
-                onChange={handleDadosChange}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-black bg-white"
-                required
-              />
-            </div>
+           <div className="flex flex-col">
+  <label className="text-sm text-gray-600 font-semibold mb-1">
+    Setor *
+  </label>
+  <select
+    name="setor"
+    value={dadosFuncionario.setor}
+    onChange={handleDadosChange}
+    className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-black bg-white outline-none cursor-pointer"
+    required
+  >
+    <option value="" disabled className="text-gray-500">
+      Selecione o setor...
+    </option>
+    {/* Adicione ou remova os setores conforme a necessidade da empresa */}
+    <option value="Administrativo" className="text-gray-900">Administrativo</option>
+    <option value="Comercial" className="text-gray-900">Comercial</option>
+    <option value="Financeiro" className="text-gray-900">Financeiro</option>
+    <option value="Logística" className="text-gray-900">Logística</option>
+    <option value="Operacional" className="text-gray-900">Operacional</option>
+    <option value="Recursos Humanos" className="text-gray-900">Recursos Humanos (RH)</option>
+    <option value="Tecnologia da Informação" className="text-gray-900">Tecnologia da Informação (TI)</option>
+  </select>
+</div>
 
             <div className="flex flex-col">
               <label className="text-sm text-gray-600 font-semibold mb-1">
