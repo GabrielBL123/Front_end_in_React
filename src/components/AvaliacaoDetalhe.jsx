@@ -179,7 +179,6 @@ const AvaliacaoDetalhe = () => {
                 Link gerado: {linkCopiado}
               </p>
             )}
-
           </div>
         </div>
 
@@ -247,7 +246,7 @@ const AvaliacaoDetalhe = () => {
           Funcionários
         </h2>
 
-        {avaliacao.funcionario?.length > 0 ? (
+        {avaliacao.funcionarios?.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full border-collapse overflow-hidden rounded-2xl shadow-sm">
               <thead>
