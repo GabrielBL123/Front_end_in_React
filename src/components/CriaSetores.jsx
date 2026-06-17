@@ -19,7 +19,7 @@ const CriaSetores = () => {
 
   const buscarSetores = async () => {
     try {
-      const response = await axios.get(`/setores/${auth?.empresaCnpj}`, {
+      const response = await axios.get(`/setores/${auth?.empresaId}`, {
         headers: { Authorization: `Bearer ${auth?.accessToken}` },
       });
 
