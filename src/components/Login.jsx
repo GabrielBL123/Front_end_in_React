@@ -34,11 +34,12 @@ const Login = () => {
       const accessToken = payload?.token;
       const roles = payload?.roles || [];
       const nome = payload?.nome;
-      
+
       // ✅ AGORA SIM! Escrito exatamente igual ao seu Record do Java (com 'ID' maiúsculo)
       const empresaNome = payload?.empresaNome;
-      const empresaId = payload?.empresaID; 
-      const usuarioId = payload?.usuarioID; 
+      const empresaId = payload?.empresaID;
+      const usuarioId = payload?.usuarioID;
+      const avaliacaoAtivaId = payload?.avaliacaoAtivaId;
 
       // ✅ Salva no contexto global (podemos manter o nome da variável local com 'd' minúsculo para padronizar no React)
       setAuth({
@@ -48,7 +49,8 @@ const Login = () => {
         nome,
         empresaNome,
         empresaId,
-        usuarioId, 
+        usuarioId,
+        avaliacaoAtivaId,
       });
 
       setUser("");

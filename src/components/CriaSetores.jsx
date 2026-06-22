@@ -19,6 +19,12 @@ const CriaSetores = () => {
 
   const buscarSetores = async () => {
     try {
+      if (auth?.avaliacaoAtivaId) {
+        setErro(
+          "Nâo é possivel gerenciar setores enquanto uma avaliação estiver ativa.",
+        );
+      }
+
       const response = await axios.get(`/setores/${auth?.empresaId}`, {
         headers: { Authorization: `Bearer ${auth?.accessToken}` },
       });

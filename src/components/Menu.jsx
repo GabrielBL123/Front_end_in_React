@@ -119,7 +119,7 @@ const Menu = () => {
             title="Questionário"
             description="Acesse o questionário de avaliação."
             icon="📋"
-            onClick={() => navigate("/questionario")}
+            onClick={() => navigate(`/avaliacoes/${auth?.avaliacaoAtualId}`)}
           />
 
           <MenuCard
@@ -127,6 +127,7 @@ const Menu = () => {
             description="Cadastre e gerencie os setores da empresa."
             icon="🏢"
             onClick={() => navigate("/criar-setores")}
+            disabled={auth?.avaliacaoAtivaId != null}
           />
         </div>
       </div>
@@ -151,27 +152,43 @@ const Menu = () => {
   );
 };
 
-const MenuCard = ({ title, description, icon, onClick, copied }) => {
+const MenuCard = ({ title, description, icon, onClick, disabled, copied }) => {
   return (
     <div
-      onClick={onClick}
-      className={`group cursor-pointer rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 flex flex-col items-start relative overflow-hidden ${
-        copied
-          ? "bg-green-500 hover:shadow-green-500/30"
-          : "bg-gradient-to-br from-green-600 to-green-800 hover:shadow-green-900/30"
+      onClick={!disabled ? onClick : undefined}
+      className={`group rounded-2xl p-8 shadow-lg transition-all duration-300 flex flex-col items-start relative overflow-hidden ${
+        disabled
+          ? "bg-gray-400 opacity-60 cursor-not-allowed"
+          : `cursor-pointer hover:shadow-2xl hover:-translate-y-2 ${
+              copied
+                ? "bg-green-500 hover:shadow-green-500/30"
+                : "bg-gradient-to-br from-green-600 to-green-800 hover:shadow-green-900/30"
+            }`
       }`}
     >
       <span className="absolute top-4 right-4 bg-yellow-400 text-yellow-900 text-xs font-black uppercase tracking-wider py-1 px-3 rounded-full">
         RH
       </span>
 
-      <div className="w-16 h-16 bg-white/20 text-white rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform backdrop-blur-sm text-3xl">
+      <div
+        className={`w-16 h-16 bg-white/20 text-white rounded-2xl flex items-center justify-center mb-6 transition-transform backdrop-blur-sm text-3xl ${
+          !disabled ? "group-hover:scale-110" : ""
+        }`}
+      >
         {icon}
       </div>
 
       <h3 className="text-2xl font-bold text-white mb-2">{title}</h3>
 
       <p className="text-green-50 leading-relaxed">{description}</p>
+
+      {disabled && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-2xl backdrop-blur-sm">
+          <p className="text-white font-bold text-sm">
+            Indisponível, avalição ativa.
+          </p>
+        </div>
+      )}
     </div>
   );
 };

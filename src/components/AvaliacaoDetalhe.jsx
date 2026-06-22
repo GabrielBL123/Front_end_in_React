@@ -19,12 +19,16 @@ const AvaliacaoDetalhe = () => {
   }, [avaliacaoId]);
 
   const buscarAvaliacao = async () => {
+    var tokenAvaliacaoAtual = "";
+
+    tokenAvaliacaoAtual = auth?.avaliacaoAtivaId || avaliacaoId;
+
     try {
       setLoading(true);
       setError("");
 
       const response = await axios.get(
-        `/avaliacoes-mensais/avaliacao/${avaliacaoId}`,
+        `/avaliacoes-mensais/avaliacao/${tokenAvaliacaoAtual}`,
         {
           headers: { Authorization: `Bearer ${auth?.accessToken}` },
           withCredentials: true,
