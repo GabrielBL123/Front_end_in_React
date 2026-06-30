@@ -20,7 +20,6 @@ const CriarAvaliacao = () => {
   });
 
   const [formData, setFormData] = useState({
-    competencia: "",
     cnpj: "",
   });
 
@@ -79,8 +78,8 @@ const CriarAvaliacao = () => {
       setError("");
 
       await axios.post(
-        "/avaliacoes-mensais/iniciar",
-        JSON.stringify(formData),
+        "/avaliacoes-mensais/iniciar?cnpj=" + formData.cnpj,
+
         {
           headers: {
             Authorization: `Bearer ${auth?.accessToken}`,
@@ -91,7 +90,6 @@ const CriarAvaliacao = () => {
       );
 
       setFormData({
-        competencia: "",
         cnpj: "",
       });
 
@@ -183,22 +181,6 @@ const CriarAvaliacao = () => {
 
           <form onSubmit={criarAvaliacao} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">
-                  Competência <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="competencia"
-                  value={formData.competencia}
-                  onChange={handleChange}
-                  placeholder="Ex: 20240617"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 transition-all"
-                  required
-                />
-                <p className="text-gray-500 text-xs mt-1">Formato: YYYYMMDD</p>
-              </div>
-
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">
                   CNPJ <span className="text-red-500">*</span>
