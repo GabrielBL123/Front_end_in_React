@@ -253,10 +253,10 @@ const CriarAvaliacao = () => {
                     <div className="flex items-start justify-between mb-9">
                       <div>
                         <p className="text-xs font-bold uppercase tracking-wider opacity-90">
-                          Competência:
+                          Criado em:
                         </p>
                         <p className="text-2xl font-bold">
-                          {avaliacao.competencia}
+                          {new Date(avaliacao.criadoEm).toLocaleDateString()}
                         </p>
                       </div>
                       <span
