@@ -15,6 +15,7 @@ import CriarAvaliacao from "./components/CriarAvaliacao";
 import AvaliacaoDetalhe from "./components/AvaliacaoDetalhe";
 import VerEmpresas from "./components/VerEmpresas";
 import Layout from "./components/Layout";
+import ListarAvaliacoesRH from "./components/ListarAvaliacoesRH"; 
 
 const Roles = {
   User: "USER",
@@ -53,6 +54,8 @@ function App() {
           />
           <Route path="menu" element={<Menu />} />
           <Route path="perfil" element={<Perfil />} />
+          <Route path="avaliacoes" element={<ListarAvaliacoesRH />} />
+
         </Route>
 
         {/* ///////////////////////////////ADMIN/////////////////////////////////////////////////  */}

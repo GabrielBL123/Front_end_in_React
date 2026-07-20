@@ -115,12 +115,6 @@ const Menu = () => {
             onClick={() => navigate("/perfil")}
           />
 
-          <MenuCard
-            title="Questionário"
-            description="Acesse o questionário de avaliação."
-            icon="📋"
-            onClick={() => navigate(`/avaliacoes/${auth?.avaliacaoAtualId}`)}
-          />
 
           <MenuCard
             title="Criar Setores"
@@ -128,6 +122,13 @@ const Menu = () => {
             icon="🏢"
             onClick={() => navigate("/criar-setores")}
             disabled={auth?.avaliacaoAtivaId != null}
+          />
+
+          <MenuCard
+            title="Ver Avaliações"
+            description="Acesse a lista e os detalhes das avaliações."
+            icon="📊"
+            onClick={() => navigate("/avaliacoes")}
           />
         </div>
       </div>
