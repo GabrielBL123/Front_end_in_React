@@ -77,17 +77,15 @@ const CriarAvaliacao = () => {
       setLoading(true);
       setError("");
 
-      await axios.post(
-        "/avaliacoes-mensais/iniciar?cnpj=" + formData.cnpj,
-
-        {
-          headers: {
-            Authorization: `Bearer ${auth?.accessToken}`,
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
+      const payload = JSON.stringify({ cnpj: formData.cnpj });
+      await axios.post("/avaliacoes-mensais/iniciar", payload, {
+        headers: {
+          Authorization: `Bearer ${auth?.accessToken}`,
+          "Content-Type": "application/json",
         },
-      );
+
+        withCredentials: true,
+      });
 
       setFormData({
         cnpj: "",
