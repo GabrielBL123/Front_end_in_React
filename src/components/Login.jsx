@@ -71,64 +71,209 @@ const Login = () => {
   };
 
   return (
-    <section>
-      <p
-        ref={errRef}
-        className={errMsg ? "text-red-500 block" : "hidden"}
-        aria-live="assertive"
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Public+Sans:wght@400;500;600&display=swap');
+
+        .psy-shell { font-family: 'Public Sans', system-ui, sans-serif; }
+        .psy-display { font-family: 'Fraunces', serif; font-optical-sizing: auto; }
+
+        @keyframes psy-breathe {
+          0%, 100% { transform: scale(1); opacity: 0.55; }
+          50% { transform: scale(1.12); opacity: 0.9; }
+        }
+        @keyframes psy-breathe-slow {
+          0%, 100% { transform: scale(1); opacity: 0.35; }
+          50% { transform: scale(1.06); opacity: 0.6; }
+        }
+        .psy-ring-1 { animation: psy-breathe 9s ease-in-out infinite; }
+        .psy-ring-2 { animation: psy-breathe-slow 9s ease-in-out infinite; animation-delay: -1.5s; }
+        .psy-ring-3 { animation: psy-breathe-slow 9s ease-in-out infinite; animation-delay: -3s; }
+
+        @media (prefers-reduced-motion: reduce) {
+          .psy-ring-1, .psy-ring-2, .psy-ring-3 { animation: none; }
+        }
+
+        .psy-input {
+          background-color: #ffffff;
+          border: 1px solid #d8d6cb;
+          color: #23302b;
+        }
+        .psy-input::placeholder { color: #9ca39c; }
+        .psy-input:focus {
+          outline: none;
+          border-color: #6e8f76;
+          box-shadow: 0 0 0 3px rgba(110, 143, 118, 0.18);
+        }
+        .psy-btn {
+          background-color: #1e3835;
+          color: #f3f1e9;
+        }
+        .psy-btn:hover { background-color: #254440; }
+        .psy-btn:focus-visible {
+          outline: none;
+          box-shadow: 0 0 0 2px #fcfbf7, 0 0 0 4px #6e8f76;
+        }
+      `}</style>
+
+      <div
+        className="psy-shell w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-5 rounded-2xl overflow-hidden"
+        style={{
+          colorScheme: "light",
+          border: "1px solid #dcd9cc",
+          boxShadow: "0 30px 60px -25px rgba(24,42,40,0.35)",
+        }}
       >
-        {errMsg}
-      </p>
-      <form onSubmit={handleSubmit}>
-        <input type="hidden" name="remember" defaultValue={true} />
-        <div className="">
-          <div>
-            <label
-              htmlFor="email-address"
-              className="block text-sm font-medium"
-            >
-              Login:
-            </label>
-            <input
-              id="email-address"
-              name="email"
-              autoComplete="email"
-              className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-300 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="Digite seu login ou email"
-              required
-              onChange={(e) => setUser(e.target.value)}
-              value={user}
+        {/* Left panel — calm / mindfulness signature */}
+        <div
+          className="relative hidden md:flex md:col-span-2 flex-col justify-between p-10 overflow-hidden min-h-[560px]"
+          style={{
+            background: "linear-gradient(to bottom, #1e3835, #152826)",
+            color: "#f3f1e9",
+          }}
+        >
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <span
+              className="psy-ring-3 absolute w-64 h-64 rounded-full"
+              style={{ border: "1px solid rgba(199,167,107,0.25)" }}
             />
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium mt-4"
-              >
-                Password:
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-300 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                onChange={(e) => setPwd(e.target.value)}
-                value={pwd}
-              />
-            </div>
-
-            <div className="mt-4">
-              <button className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700">
-                Sign in
-              </button>
-            </div>
+            <span
+              className="psy-ring-2 absolute w-48 h-48 rounded-full"
+              style={{ border: "1px solid rgba(199,167,107,0.35)" }}
+            />
+            <span
+              className="psy-ring-1 absolute w-32 h-32 rounded-full"
+              style={{ border: "1px solid rgba(199,167,107,0.5)" }}
+            />
+            <span
+              className="absolute w-3 h-3 rounded-full"
+              style={{ backgroundColor: "#c7a76b" }}
+            />
           </div>
+
+          <div className="relative z-10">
+            <p
+              className="text-xs tracking-[0.3em] uppercase"
+              style={{ color: "rgba(199,167,107,0.9)" }}
+            >
+                Bem vindo ao sistema Cuida+
+            </p>
+            <h1 className="psy-display italic text-3xl mt-3 leading-snug">
+              Um espaço para
+              <br />
+              organizar o cuidado.
+            </h1>
+          </div>
+
+          <p
+            className="relative z-10 text-sm max-w-[26ch] leading-relaxed"
+            style={{ color: "rgba(217,214,200,0.8)" }}
+          >
+            Acesse o painel para acompanhar avaliações, sessões e o histórico
+            de cada paciente em um só lugar.
+          </p>
         </div>
-      </form>
-    </section>
+
+        {/* Right panel — form */}
+        <section
+          className="md:col-span-3 p-8 sm:p-12 flex flex-col justify-center"
+          style={{ backgroundColor: "#fcfbf7" }}
+        >
+          <div className="max-w-sm w-full mx-auto">
+            <p
+              className="text-xs tracking-[0.25em] uppercase font-medium mb-2"
+              style={{ color: "#5c7d63" }}
+            >
+              Bem-vindo(a) de volta
+            </p>
+            <h2
+              className="psy-display text-2xl mb-8"
+              style={{ color: "#1f2a27" }}
+            >
+              Entrar na plataforma
+            </h2>
+
+            <p
+              ref={errRef}
+              className={errMsg ? "block mb-5 rounded-lg px-4 py-2.5 text-sm" : "hidden"}
+              style={
+                errMsg
+                  ? {
+                      border: "1px solid rgba(201,123,107,0.4)",
+                      backgroundColor: "rgba(201,123,107,0.1)",
+                      color: "#8a3e31",
+                    }
+                  : undefined
+              }
+              aria-live="assertive"
+            >
+              {errMsg}
+            </p>
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <input type="hidden" name="remember" defaultValue={true} />
+
+              <div>
+                <label
+                  htmlFor="email-address"
+                  className="block text-sm font-medium mb-1.5"
+                  style={{ color: "#3a423e" }}
+                >
+                  Login
+                </label>
+                <input
+                  id="email-address"
+                  name="email"
+                  autoComplete="email"
+                  className="psy-input appearance-none block w-full rounded-lg px-3.5 py-2.5 transition-shadow sm:text-sm"
+                  placeholder="Digite seu login ou email"
+                  required
+                  onChange={(e) => setUser(e.target.value)}
+                  value={user}
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium mb-1.5"
+                  style={{ color: "#3a423e" }}
+                >
+                  Senha
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  className="psy-input appearance-none block w-full rounded-lg px-3.5 py-2.5 transition-shadow sm:text-sm"
+                  placeholder="Senha"
+                  onChange={(e) => setPwd(e.target.value)}
+                  value={pwd}
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="psy-btn w-full mt-2 rounded-lg font-medium text-sm py-2.5 transition-colors"
+              >
+                Entrar
+              </button>
+            </form>
+
+            <p
+              className="mt-8 text-xs text-center leading-relaxed"
+              style={{ color: "#8b9188" }}
+            >
+              Seus dados são tratados com confidencialidade,
+              <br />
+              como parte do cuidado com cada paciente.
+            </p>
+          </div>
+        </section>
+      </div>
+    </>
   );
 };
 

@@ -83,7 +83,6 @@ const CriarAvaliacao = () => {
           Authorization: `Bearer ${auth?.accessToken}`,
           "Content-Type": "application/json",
         },
-
         withCredentials: true,
       });
 
@@ -100,9 +99,40 @@ const CriarAvaliacao = () => {
     }
   };
 
+  // 👇 NOVA FUNÇÃO PARA FINALIZAR A AVALIAÇÃO 👇
+  const finalizarAvaliacao = async (cnpj) => {
+    const confirmar = window.confirm(
+      "Deseja realmente finalizar esta avaliação? O link será desativado e ela não receberá novas respostas."
+    );
+    if (!confirmar) return;
+
+    try {
+      setLoading(true);
+      setError("");
+
+      // Assumindo que o seu endpoint do Controller seja "/finalizar". 
+      // Caso seja método PUT, troque o axios.post por axios.put
+      const payload = JSON.stringify({ cnpj });
+      await axios.post("/avaliacoes-mensais/finalizar", payload, {
+        headers: {
+          Authorization: `Bearer ${auth?.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+
+      await buscarAvaliacoes(pageInfo.number, pageInfo.size);
+    } catch (err) {
+      console.error("Erro ao finalizar avaliação", err);
+      setError(err.response?.data?.message || "Erro ao finalizar avaliação.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const deletarAvaliacao = async (id) => {
     const confirmar = window.confirm(
-      "Deseja realmente deletar esta avaliação?",
+      "Deseja realmente deletar esta avaliação?"
     );
     if (!confirmar) return;
 
@@ -284,17 +314,27 @@ const CriarAvaliacao = () => {
                       </p>
                     </div>
 
-                    <div className="flex gap-2 pt-4 border-t border-gray-200">
+                    <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-200">
                       <button
                         onClick={() => navigate(`/avaliacoes/${avaliacao.id}`)}
-                        className="flex-1 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium text-sm"
+                        className="flex-1 min-w-[30%] px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium text-sm"
                       >
                         Visualizar
                       </button>
 
+                      {/* 👇 NOVO BOTÃO DE FINALIZAR APARECE SOMENTE SE ESTIVER ATIVA 👇 */}
+                      {avaliacao.status && (
+                        <button
+                          onClick={() => finalizarAvaliacao(avaliacao.cnpj)}
+                          className="flex-1 min-w-[30%] px-3 py-2 bg-yellow-50 text-yellow-700 rounded-lg hover:bg-yellow-100 transition-colors font-medium text-sm"
+                        >
+                          Finalizar
+                        </button>
+                      )}
+
                       <button
                         onClick={() => deletarAvaliacao(avaliacao.id)}
-                        className="flex-1 px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium text-sm"
+                        className="flex-1 min-w-[30%] px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium text-sm"
                       >
                         Deletar
                       </button>

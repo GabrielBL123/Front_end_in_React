@@ -9,10 +9,18 @@ const AvaliacaoDetalhe = () => {
   const navigate = useNavigate();
   const { auth } = useAuth();
 
+ 
+  const isAdmin =
+    auth?.roles?.includes("ADMIN") ||
+    auth?.roles?.includes("ROLE_ADMIN") ||
+    auth?.role === "ADMIN" ||
+    auth?.role === "ROLE_ADMIN";
+
   const [avaliacao, setAvaliacao] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [linkCopiado, setLinkCopiado] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     buscarAvaliacao();
@@ -64,6 +72,41 @@ const AvaliacaoDetalhe = () => {
       setError("Não foi possível gerar o link da avaliação.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const baixarRelatorioExcel = async () => {
+    const tokenAvaliacaoAtual = auth?.avaliacaoAtivaId || avaliacaoId;
+
+    try {
+      setDownloading(true);
+      setError("");
+
+      const response = await axios.get(
+        `/avaliacoes-mensais/${tokenAvaliacaoAtual}/exportar-excel`,
+        {
+          headers: { Authorization: `Bearer ${auth?.accessToken}` },
+          withCredentials: true,
+          responseType: "blob", 
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `Relatorio_Avaliacao_${tokenAvaliacaoAtual}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+    } catch (err) {
+      console.error("Erro ao baixar o relatório Excel", err);
+      setError("Não foi possível baixar o relatório. Tente novamente.");
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -126,8 +169,7 @@ const AvaliacaoDetalhe = () => {
             Visualize as informações da avaliação mensal.
           </p>
         </div>
-
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <button
             onClick={() => navigate(-1)}
             className="px-5 py-2 rounded-xl bg-gray-800 text-white hover:bg-gray-700 transition-colors font-medium"
@@ -140,6 +182,23 @@ const AvaliacaoDetalhe = () => {
           >
             Atualizar
           </button>
+          
+          {/* 👇 Condicional isAdmin adicionada em volta do botão 👇 */}
+          {isAdmin && (
+            <button
+              onClick={baixarRelatorioExcel}
+              disabled={downloading}
+              className="px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-medium disabled:opacity-50 flex items-center gap-2"
+            >
+              {downloading ? (
+                "Baixando..."
+              ) : (
+                <>
+                  <span className="text-lg">📥</span> Baixar Excel
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
 
