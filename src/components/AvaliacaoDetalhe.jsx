@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
 import "../tailwind.css";
@@ -21,13 +21,8 @@ const AvaliacaoDetalhe = () => {
   const [linkCopiado, setLinkCopiado] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
-  useEffect(() => {
-    buscarAvaliacao();
-  }, [avaliacaoId]);
-
-  const buscarAvaliacao = async () => {
-    var tokenAvaliacaoAtual = "";
-    tokenAvaliacaoAtual = auth?.avaliacaoAtivaId || avaliacaoId;
+  const buscarAvaliacao = useCallback(async () => {
+    const tokenAvaliacaoAtual = auth?.avaliacaoAtivaId || avaliacaoId;
 
     try {
       setLoading(true);
@@ -42,7 +37,6 @@ const AvaliacaoDetalhe = () => {
       );
 
       const data = response.data?.data || response.data;
-      console.log("DADOS QUE CHEGARAM DA API:", data);
       setAvaliacao(data);
     } catch (err) {
       console.error("Erro ao buscar avaliação", err);
@@ -50,7 +44,11 @@ const AvaliacaoDetalhe = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [avaliacaoId, auth?.accessToken, auth?.avaliacaoAtivaId]);
+
+  useEffect(() => {
+    buscarAvaliacao();
+  }, [buscarAvaliacao]);
 
   const gerarLinkAvaliacao = async () => {
     try {
@@ -187,7 +185,6 @@ const AvaliacaoDetalhe = () => {
       `}</style>
 
       <div className="w-full max-w-6xl mx-auto space-y-8">
-        {/* Header */}
         <div 
           className="psy-shell w-full p-8 md:p-12 rounded-3xl flex flex-col md:flex-row md:items-center md:justify-between gap-6"
           style={{
@@ -221,7 +218,7 @@ const AvaliacaoDetalhe = () => {
               Voltar
             </button>
             <button
-              onClick={() => buscarAvaliacao(true)}
+              onClick={() => buscarAvaliacao()}
               className="psy-btn px-4 py-2.5 rounded-xl transition-colors font-medium text-sm shadow-sm"
             >
               Atualizar
@@ -246,7 +243,6 @@ const AvaliacaoDetalhe = () => {
           </div>
         </div>
 
-        {/* Informações da Avaliação e Empresa */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div 
             className="psy-shell rounded-3xl p-8 shadow-sm flex flex-col justify-between"
@@ -339,7 +335,6 @@ const AvaliacaoDetalhe = () => {
           </div>
         </div>
 
-        {/* Setores Cadastrados */}
         <div className="psy-shell rounded-3xl p-8 shadow-sm" style={{ backgroundColor: "#FCFBF7", border: "1px solid #DCD9CC" }}>
           <h2 className="psy-display text-2xl mb-6" style={{ color: "#1E3835" }}>
             Setores Cadastrados
@@ -370,7 +365,6 @@ const AvaliacaoDetalhe = () => {
           )}
         </div>
 
-        {/* Respostas dos Funcionários */}
         <div className="psy-shell rounded-3xl p-8 shadow-sm" style={{ backgroundColor: "#FCFBF7", border: "1px solid #DCD9CC" }}>
           <h2 className="psy-display text-2xl mb-6" style={{ color: "#1E3835" }}>
             Respostas dos Funcionários por Setor

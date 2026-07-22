@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -26,11 +26,7 @@ const CriarAvaliacao = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    buscarAvaliacoes();
-  }, []);
-
-  const buscarAvaliacoes = async (page = 0, size = 10) => {
+  const buscarAvaliacoes = useCallback(async (page = 0, size = 10) => {
     try {
       setLoading(true);
       setError("");
@@ -60,7 +56,11 @@ const CriarAvaliacao = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [auth?.accessToken]);
+
+  useEffect(() => {
+    buscarAvaliacoes();
+  }, [buscarAvaliacoes]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -198,7 +198,6 @@ const CriarAvaliacao = () => {
       `}</style>
 
       <div className="w-full max-w-7xl mx-auto space-y-8">
-        {/* Header */}
         <div 
           className="psy-shell w-full p-8 md:p-12 rounded-3xl flex flex-col md:flex-row justify-between items-center gap-6"
           style={{
@@ -225,7 +224,6 @@ const CriarAvaliacao = () => {
           </div>
         </div>
 
-        {/* Error Message */}
         {error && (
           <div className="psy-shell w-full p-4 rounded-xl text-center" style={{ border: "1px solid rgba(201,123,107,0.4)", backgroundColor: "rgba(201,123,107,0.1)", color: "#8a3e31" }}>
             <p className="font-bold">⚠️ Erro</p>
@@ -233,7 +231,6 @@ const CriarAvaliacao = () => {
           </div>
         )}
 
-        {/* Success Message */}
         {message && !error && (
           <div className="psy-shell w-full p-4 rounded-xl flex items-center gap-3" style={{ border: "1px solid rgba(110,143,118,0.4)", backgroundColor: "rgba(110,143,118,0.1)", color: "#1E3835" }}>
             <span className="text-xl">✅</span>
@@ -241,7 +238,6 @@ const CriarAvaliacao = () => {
           </div>
         )}
 
-        {/* Form Section */}
         <div 
           className="psy-shell w-full p-8 md:p-10 rounded-3xl"
           style={{
@@ -296,7 +292,6 @@ const CriarAvaliacao = () => {
           </form>
         </div>
 
-        {/* Avaliacoes List */}
         <div>
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
@@ -398,7 +393,6 @@ const CriarAvaliacao = () => {
           )}
         </div>
 
-        {/* Pagination */}
         {!pageInfo.empty && pageInfo.totalPages > 1 && (
           <div className="psy-shell rounded-3xl p-6 shadow-lg border" style={{ backgroundColor: "#FCFBF7", borderColor: "#DCD9CC" }}>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
