@@ -9,7 +9,6 @@ const AvaliacaoDetalhe = () => {
   const navigate = useNavigate();
   const { auth } = useAuth();
 
- 
   const isAdmin =
     auth?.roles?.includes("ADMIN") ||
     auth?.roles?.includes("ROLE_ADMIN") ||
@@ -126,279 +125,338 @@ const AvaliacaoDetalhe = () => {
 
   if (loading) {
     return (
-      <div className="w-full max-w-6xl bg-white p-8 md:p-14 rounded-3xl shadow-2xl my-8 mx-auto">
-        <p className="text-gray-600 text-lg font-medium">
-          A carregar avaliação...
-        </p>
+      <div className="w-full min-h-screen flex items-center justify-center" style={{ backgroundColor: "#EDEEE8" }}>
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#E3F0E6] border-t-[#6E8F76] rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="font-medium text-lg" style={{ color: "#5C7D63" }}>
+            A carregar avaliação...
+          </p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="w-full max-w-6xl bg-white p-8 md:p-14 rounded-3xl shadow-2xl my-8 mx-auto">
-        <p className="text-red-600 text-lg font-medium">{error}</p>
-        <button
-          onClick={() => navigate(-1)}
-          className="mt-6 px-5 py-2 rounded-xl bg-gray-800 text-white hover:bg-gray-700 transition-colors"
-        >
-          Voltar
-        </button>
+      <div className="w-full min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: "#EDEEE8" }}>
+        <div className="psy-shell max-w-xl w-full p-8 rounded-3xl text-center shadow-lg" style={{ backgroundColor: "#FCFBF7", border: "1px solid #DCD9CC" }}>
+          <p className="font-medium text-lg mb-6" style={{ color: "#8A3E31" }}>{error}</p>
+          <button
+            onClick={() => navigate(-1)}
+            className="psy-btn px-6 py-2.5 rounded-xl font-semibold transition-colors"
+          >
+            Voltar
+          </button>
+        </div>
       </div>
     );
   }
 
   if (!avaliacao) {
     return (
-      <div className="w-full max-w-6xl bg-white p-8 md:p-14 rounded-3xl shadow-2xl my-8 mx-auto">
-        <p className="text-gray-600 text-lg font-medium">
-          Avaliação não encontrada.
-        </p>
+      <div className="w-full min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: "#EDEEE8" }}>
+        <div className="psy-shell max-w-xl w-full p-8 rounded-3xl text-center shadow-lg" style={{ backgroundColor: "#FCFBF7", border: "1px solid #DCD9CC" }}>
+          <p className="font-medium text-lg" style={{ color: "#6B7570" }}>
+            Avaliação não encontrada.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full max-w-6xl bg-white p-8 md:p-14 rounded-3xl shadow-2xl my-8 mx-auto">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">
-            Detalhes da Avaliação
-          </h1>
-          <p className="text-gray-500 mt-2">
-            Visualize as informações da avaliação mensal.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="px-5 py-2 rounded-xl bg-gray-800 text-white hover:bg-gray-700 transition-colors font-medium"
-          >
-            Voltar
-          </button>
-          <button
-            onClick={() => buscarAvaliacao(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium"
-          >
-            Atualizar
-          </button>
-          
-          {/* 👇 Condicional isAdmin adicionada em volta do botão 👇 */}
-          {isAdmin && (
-            <button
-              onClick={baixarRelatorioExcel}
-              disabled={downloading}
-              className="px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-medium disabled:opacity-50 flex items-center gap-2"
-            >
-              {downloading ? (
-                "Baixando..."
-              ) : (
-                <>
-                  <span className="text-lg">📥</span> Baixar Excel
-                </>
-              )}
-            </button>
-          )}
-        </div>
-      </div>
+    <div 
+      className="w-full min-h-screen flex flex-col items-center p-4 md:p-8"
+      style={{ backgroundColor: "#EDEEE8", colorScheme: "light" }}
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Public+Sans:wght@400;500;600&display=swap');
+        .psy-shell { font-family: 'Public Sans', system-ui, sans-serif; }
+        .psy-display { font-family: 'Fraunces', serif; font-optical-sizing: auto; }
+        .psy-btn {
+          background-color: #1e3835;
+          color: #f3f1e9;
+        }
+        .psy-btn:hover { background-color: #254440; }
+        .psy-btn-secondary {
+          background-color: transparent;
+          color: #3A423E;
+          border: 1px solid #D8D6CB;
+        }
+        .psy-btn-secondary:hover { background-color: #F3F1E9; }
+      `}</style>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-        <div className="bg-green-700 rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col ">
-          <h2 className="text-xl font-semibold text-gray-800 mb-5 border-b border-gray-100 pb-2">
-            Informações da Avaliação
-          </h2>
-          <ul className="space-y-3 flex-1">
-            <li className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
-              <span className="font-semibold text-gray-800 min-w-[120px]">
-                Criado em:
+      <div className="w-full max-w-6xl mx-auto space-y-8">
+        {/* Header */}
+        <div 
+          className="psy-shell w-full p-8 md:p-12 rounded-3xl flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+          style={{
+            backgroundColor: "#FCFBF7",
+            boxShadow: "0 30px 60px -25px rgba(24,42,40,0.35)",
+            border: "1px solid #DCD9CC",
+          }}
+        >
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <span className="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style={{ backgroundColor: "#C7A76B", color: "#1F2A27" }}>
+                📋
               </span>
-              <span className="text-gray-900 font-medium  px-3 py-2 flex-1 min-h-[40px] flex items-center">
-                {formatarData(avaliacao.criadoEm)}
-              </span>
-            </li>
-            <li className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
-              <span className="font-semibold text-gray-800 min-w-[120px]">
-                Ativa:
-              </span>
-              <div className="flex-1 min-h-[40px] flex items-center">
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${avaliacao.isActive ? "bg-green-100 text-green-700 border border-green-200" : "bg-red-100 text-red-700 border border-red-200"}`}
-                >
-                  {avaliacao.isActive ? "Sim" : "Não"}
-                </span>
-              </div>
-            </li>
-          </ul>
-          <div className="mt-6 pt-5 border-t border-gray-100">
-            <button
-              onClick={() => gerarLinkAvaliacao()}
-              className="px-5 py-2.5 bg-green-600 text-white font-medium rounded-xl hover:bg-green-700 transition-colors w-full sm:w-auto"
-            >
-              Gerar Link
-            </button>
-            {linkCopiado && (
-              <p className="text-green-700 mt-3 break-all font-mono text-sm bg-green-50 p-3 rounded-lg border border-green-200">
-                Link gerado: {linkCopiado}
+              <p className="text-xs tracking-[0.25em] uppercase font-bold" style={{ color: "#5C7D63" }}>
+                Gerenciamento
               </p>
+            </div>
+            <h1 className="psy-display text-4xl md:text-5xl" style={{ color: "#1F2A27" }}>
+              Detalhes da Avaliação
+            </h1>
+            <p className="mt-2 text-base" style={{ color: "#6B7570" }}>
+              Visualize as informações da avaliação mensal.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => navigate(-1)}
+              className="psy-btn-secondary px-5 py-2.5 rounded-xl transition-colors font-medium text-sm"
+            >
+              Voltar
+            </button>
+            <button
+              onClick={() => buscarAvaliacao(true)}
+              className="psy-btn px-4 py-2.5 rounded-xl transition-colors font-medium text-sm shadow-sm"
+            >
+              Atualizar
+            </button>
+            
+            {isAdmin && (
+              <button
+                onClick={baixarRelatorioExcel}
+                disabled={downloading}
+                className="px-4 py-2.5 rounded-xl transition-colors font-medium text-sm disabled:opacity-50 flex items-center gap-2 shadow-sm"
+                style={{ backgroundColor: "#2F5C3E", color: "#F3F1E9" }}
+              >
+                {downloading ? (
+                  "Baixando..."
+                ) : (
+                  <>
+                    <span className="text-lg">📥</span> Baixar Excel
+                  </>
+                )}
+              </button>
             )}
           </div>
         </div>
 
-        <div className="bg-green-700 rounded-2xl p-6 border  shadow-xl flex flex-col">
-          <h2 className="text-xl font-semibold text-gray-800 mb-5 border-b border-gray-100 pb-2">
-            Empresa
-          </h2>
-          <ul className="space-y-3 flex-1">
-            <li className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
-              <span className="font-semibold text-gray-800 min-w-[100px]">
-                Nome:
-              </span>
-              <span className="text-gray-900 font-medium break-all px-3 py-2 rounded-lg   flex-1 min-h-[40px] flex items-center">
-                {avaliacao.empresa?.nome || "-"}
-              </span>
-            </li>
-            <li className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
-              <span className="font-semibold text-gray-800 min-w-[100px]">
-                CNPJ:
-              </span>
-              <span className="text-gray-900 font-medium break-all px-3 py-2 rounded-lg   flex-1 min-h-[40px] flex items-center">
-                {avaliacao.empresa?.cnpj || "-"}
-              </span>
-            </li>
-            <li className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
-              <span className="font-semibold text-gray-800 min-w-[100px]">
-                E-mail:
-              </span>
-              <span className="text-gray-900 font-medium break-all px-3 py-2 rounded-lg   flex-1 min-h-[40px] flex items-center">
-                {avaliacao.empresa?.email || "-"}
-              </span>
-            </li>
-            <li className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
-              <span className="font-semibold text-gray-800 min-w-[100px]">
-                Telefone:
-              </span>
-              <span className="text-gray-900 font-medium break-all px-3 py-2 rounded-lg   flex-1 min-h-[40px] flex items-center">
-                {avaliacao.empresa?.telefone || "-"}
-              </span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="mb-10">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-5">
-          Setores Cadastrados
-        </h2>
-        {avaliacao.empresa?.setores?.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {avaliacao.empresa.setores.map((setor) => (
-              <div
-                key={setor.id}
-                className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex flex-col gap-3"
-              >
-                <div className="flex flex-col">
-                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
-                    Nome
+        {/* Informações da Avaliação e Empresa */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div 
+            className="psy-shell rounded-3xl p-8 shadow-sm flex flex-col justify-between"
+            style={{ backgroundColor: "#FCFBF7", border: "1px solid #DCD9CC" }}
+          >
+            <div>
+              <h2 className="psy-display text-2xl mb-6 pb-3 border-b" style={{ color: "#1E3835", borderBottomColor: "#E4E1D3" }}>
+                Informações da Avaliação
+              </h2>
+              <ul className="space-y-4">
+                <li className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+                  <span className="font-semibold text-sm uppercase tracking-wider min-w-[120px]" style={{ color: "#8B9188" }}>
+                    Criado em:
                   </span>
-                  <span className="text-gray-900 font-medium break-all bg-gray-50 px-3 py-2 rounded-lg border border-gray-100 min-h-[40px] flex items-center">
+                  <span className="font-medium px-3 py-2 rounded-xl flex-1 flex items-center" style={{ backgroundColor: "#EDEEE8", color: "#1F2A27" }}>
+                    {formatarData(avaliacao.criadoEm)}
+                  </span>
+                </li>
+                <li className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+                  <span className="font-semibold text-sm uppercase tracking-wider min-w-[120px]" style={{ color: "#8B9188" }}>
+                    Ativa:
+                  </span>
+                  <div className="flex-1 flex items-center">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-bold ${avaliacao.isActive ? "bg-emerald-500/20 text-emerald-800 border border-emerald-500/30" : "bg-red-500/20 text-red-800 border border-red-500/30"}`}
+                    >
+                      {avaliacao.isActive ? "Sim" : "Não"}
+                    </span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div className="mt-8 pt-5 border-t" style={{ borderColor: "#E4E1D3" }}>
+              <button
+                onClick={() => gerarLinkAvaliacao()}
+                className="psy-btn px-6 py-2.5 font-medium rounded-xl transition-colors w-full sm:w-auto text-sm shadow-sm"
+              >
+                Gerar Link
+              </button>
+              {linkCopiado && (
+                <p className="mt-3 break-all font-mono text-xs p-3 rounded-xl border" style={{ backgroundColor: "#E3F0E6", color: "#2F5C3E", borderColor: "rgba(110,143,118,0.3)" }}>
+                  Link gerado: {linkCopiado}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div 
+            className="psy-shell rounded-3xl p-8 shadow-sm flex flex-col"
+            style={{ backgroundColor: "#FCFBF7", border: "1px solid #DCD9CC" }}
+          >
+            <h2 className="psy-display text-2xl mb-6 pb-3 border-b" style={{ color: "#1E3835", borderBottomColor: "#E4E1D3" }}>
+              Empresa
+            </h2>
+            <ul className="space-y-3 flex-1">
+              <li className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+                <span className="font-semibold text-sm uppercase tracking-wider min-w-[100px]" style={{ color: "#8B9188" }}>
+                  Nome:
+                </span>
+                <span className="font-medium break-all px-3 py-2 rounded-xl flex-1 flex items-center" style={{ backgroundColor: "#EDEEE8", color: "#1F2A27" }}>
+                  {avaliacao.empresa?.nome || "-"}
+                </span>
+              </li>
+              <li className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+                <span className="font-semibold text-sm uppercase tracking-wider min-w-[100px]" style={{ color: "#8B9188" }}>
+                  CNPJ:
+                </span>
+                <span className="font-medium break-all px-3 py-2 rounded-xl flex-1 flex items-center font-mono text-sm" style={{ backgroundColor: "#EDEEE8", color: "#1F2A27" }}>
+                  {avaliacao.empresa?.cnpj || "-"}
+                </span>
+              </li>
+              <li className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+                <span className="font-semibold text-sm uppercase tracking-wider min-w-[100px]" style={{ color: "#8B9188" }}>
+                  E-mail:
+                </span>
+                <span className="font-medium break-all px-3 py-2 rounded-xl flex-1 flex items-center" style={{ backgroundColor: "#EDEEE8", color: "#1F2A27" }}>
+                  {avaliacao.empresa?.email || "-"}
+                </span>
+              </li>
+              <li className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+                <span className="font-semibold text-sm uppercase tracking-wider min-w-[100px]" style={{ color: "#8B9188" }}>
+                  Telefone:
+                </span>
+                <span className="font-medium break-all px-3 py-2 rounded-xl flex-1 flex items-center" style={{ backgroundColor: "#EDEEE8", color: "#1F2A27" }}>
+                  {avaliacao.empresa?.telefone || "-"}
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Setores Cadastrados */}
+        <div className="psy-shell rounded-3xl p-8 shadow-sm" style={{ backgroundColor: "#FCFBF7", border: "1px solid #DCD9CC" }}>
+          <h2 className="psy-display text-2xl mb-6" style={{ color: "#1E3835" }}>
+            Setores Cadastrados
+          </h2>
+          {avaliacao.empresa?.setores?.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {avaliacao.empresa.setores.map((setor) => (
+                <div
+                  key={setor.id}
+                  className="rounded-2xl p-4 shadow-sm flex flex-col gap-1 border"
+                  style={{ backgroundColor: "#EDEEE8", borderColor: "#D8D6CB" }}
+                >
+                  <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "#5C7D63" }}>
+                    Nome do Setor
+                  </span>
+                  <span className="font-semibold text-base" style={{ color: "#1F2A27" }}>
                     {setor.nome}
                   </span>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="bg-gray-50 p-6 rounded-2xl border border-dashed border-gray-300 text-center">
-            <p className="text-gray-500 font-medium">
-              Nenhum setor cadastrado encontrado.
-            </p>
-          </div>
-        )}
-      </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-6 rounded-2xl border border-dashed text-center" style={{ borderColor: "#D8D6CB" }}>
+              <p className="font-medium text-sm" style={{ color: "#8B9188" }}>
+                Nenhum setor cadastrado encontrado.
+              </p>
+            </div>
+          )}
+        </div>
 
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-5">
-          Respostas dos Funcionários por Setor
-        </h2>
-        {avaliacao.funcionario?.length > 0 ? (
-          <div className="space-y-8">
-            {Object.entries(
-              avaliacao.funcionario.reduce((grupos, func) => {
-                const setorNome = func.setor || "Setor Não Especificado";
-                if (!grupos[setorNome]) grupos[setorNome] = [];
-                grupos[setorNome].push(func);
-                return grupos;
-              }, {}),
-            ).map(([nomeDoSetor, funcionariosDoSetor]) => (
-              <div
-                key={nomeDoSetor}
-                className="overflow-hidden rounded-2xl shadow-sm border border-gray-200 bg-white"
-              >
-                <div className="bg-gray-800 text-white p-4 font-bold text-lg flex justify-between items-center">
-                  <span>Setor: {nomeDoSetor}</span>
-                  <span className="text-sm font-medium bg-gray-700 px-3 py-1 rounded-full border border-gray-600">
-                    {funcionariosDoSetor.length}{" "}
-                    {funcionariosDoSetor.length === 1
-                      ? "respondente"
-                      : "respondentes"}
-                  </span>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full border-collapse text-left">
-                    <thead>
-                      <tr className="bg-gray-50 border-b border-gray-200">
-                        <th className="p-4 font-semibold text-gray-700 whitespace-nowrap">
-                          Login
-                        </th>
-                        <th className="p-4 font-semibold text-gray-700 whitespace-nowrap">
-                          Nome
-                        </th>
-                        <th className="p-4 font-semibold text-gray-700 whitespace-nowrap">
-                          Cargo
-                        </th>
-                        <th className="p-4 font-semibold text-gray-700 whitespace-nowrap">
-                          Tempo de Trabalho
-                        </th>
-                        <th className="p-4 font-semibold text-gray-700 whitespace-nowrap">
-                          Jornada
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {funcionariosDoSetor.map((func, index) => (
-                        <tr
-                          key={`${func.login}-${index}`}
-                          className="border-b last:border-0 border-gray-200 bg-white hover:bg-gray-50 transition-colors"
-                        >
-                          <td className="p-4 font-mono text-sm text-gray-700">
-                            {func.login}
-                          </td>
-                          <td className="p-4 font-medium text-gray-900">
-                            {func.nome}
-                          </td>
-                          <td className="p-4 text-gray-700">{func.cargo}</td>
-                          <td className="p-4 text-gray-700">
-                            {formatarData(func.tempoDeTrabalho)}
-                          </td>
-                          <td className="p-4 text-gray-700">
-                            {formatarDuracao(func.jornada)}
-                          </td>
+        {/* Respostas dos Funcionários */}
+        <div className="psy-shell rounded-3xl p-8 shadow-sm" style={{ backgroundColor: "#FCFBF7", border: "1px solid #DCD9CC" }}>
+          <h2 className="psy-display text-2xl mb-6" style={{ color: "#1E3835" }}>
+            Respostas dos Funcionários por Setor
+          </h2>
+          {avaliacao.funcionario?.length > 0 ? (
+            <div className="space-y-8">
+              {Object.entries(
+                avaliacao.funcionario.reduce((grupos, func) => {
+                  const setorNome = func.setor || "Setor Não Especificado";
+                  if (!grupos[setorNome]) grupos[setorNome] = [];
+                  grupos[setorNome].push(func);
+                  return grupos;
+                }, {}),
+              ).map(([nomeDoSetor, funcionariosDoSetor]) => (
+                <div
+                  key={nomeDoSetor}
+                  className="overflow-hidden rounded-2xl border shadow-sm bg-white"
+                  style={{ borderColor: "#DCD9CC" }}
+                >
+                  <div className="p-4 font-bold text-lg flex justify-between items-center text-white" style={{ background: "linear-gradient(135deg, #1E3835, #152826)" }}>
+                    <span>Setor: {nomeDoSetor}</span>
+                    <span className="text-xs font-semibold px-3 py-1 rounded-full border border-white/20" style={{ backgroundColor: "rgba(255,255,255,0.1)" }}>
+                      {funcionariosDoSetor.length}{" "}
+                      {funcionariosDoSetor.length === 1
+                        ? "respondente"
+                        : "respondentes"}
+                    </span>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse text-left text-sm">
+                      <thead>
+                        <tr className="border-b" style={{ backgroundColor: "#EDEEE8", borderColor: "#E4E1D3" }}>
+                          <th className="p-4 font-semibold whitespace-nowrap" style={{ color: "#3A423E" }}>
+                            Login
+                          </th>
+                          <th className="p-4 font-semibold whitespace-nowrap" style={{ color: "#3A423E" }}>
+                            Nome
+                          </th>
+                          <th className="p-4 font-semibold whitespace-nowrap" style={{ color: "#3A423E" }}>
+                            Cargo
+                          </th>
+                          <th className="p-4 font-semibold whitespace-nowrap" style={{ color: "#3A423E" }}>
+                            Tempo de Trabalho
+                          </th>
+                          <th className="p-4 font-semibold whitespace-nowrap" style={{ color: "#3A423E" }}>
+                            Jornada
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {funcionariosDoSetor.map((func, index) => (
+                          <tr
+                            key={`${func.login}-${index}`}
+                            className="border-b last:border-0 transition-colors hover:bg-gray-50"
+                            style={{ borderColor: "#E4E1D3" }}
+                          >
+                            <td className="p-4 font-mono text-xs" style={{ color: "#6B7570" }}>
+                              {func.login}
+                            </td>
+                            <td className="p-4 font-medium" style={{ color: "#1F2A27" }}>
+                              {func.nome}
+                            </td>
+                            <td className="p-4" style={{ color: "#6B7570" }}>{func.cargo}</td>
+                            <td className="p-4" style={{ color: "#6B7570" }}>
+                              {formatarData(func.tempoDeTrabalho)}
+                            </td>
+                            <td className="p-4" style={{ color: "#6B7570" }}>
+                              {formatarDuracao(func.jornada)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="bg-gray-50 p-8 rounded-2xl border border-dashed border-gray-300 text-center">
-            <p className="text-gray-600 font-medium">
-              Nenhum funcionário respondeu ao questionário desta competência até
-              o momento.
-            </p>
-          </div>
-        )}
+              ))}
+            </div>
+          ) : (
+            <div className="p-8 rounded-2xl border border-dashed text-center" style={{ borderColor: "#D8D6CB", backgroundColor: "#EDEEE8" }}>
+              <p className="font-medium text-sm" style={{ color: "#6B7570" }}>
+                Nenhum funcionário respondeu ao questionário desta competência até
+                o momento.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

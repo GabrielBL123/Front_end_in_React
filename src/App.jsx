@@ -1,4 +1,6 @@
 import { Routes, Route } from "react-router-dom";
+// Remova a importação do Layout:
+// import Layout from "./components/Layout"; 
 import Login from "./components/Login";
 import Menu from "./components/Menu";
 import RequireAuth from "./components/RequireAuth";
@@ -14,7 +16,6 @@ import Status from "./components/Status";
 import CriarAvaliacao from "./components/CriarAvaliacao";
 import AvaliacaoDetalhe from "./components/AvaliacaoDetalhe";
 import VerEmpresas from "./components/VerEmpresas";
-import Layout from "./components/Layout";
 import ListarAvaliacoesRH from "./components/ListarAvaliacoesRH"; 
 
 const Roles = {
@@ -25,9 +26,11 @@ const Roles = {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Login />} />
+    // 👇 ESTA DIV SUBSTITUI O LAYOUT PARA NÃO QUEBRAR A FORMATAÇÃO 👇
+    // (Se o seu Layout tinha uma cor de fundo específica, coloque aqui)
+    <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col">
+      <Routes>
+        <Route path="/" element={<Login />} />
 
         {/* =========================================
             ROTAS PÚBLICAS (Acesso livre)
@@ -37,25 +40,17 @@ function App() {
         <Route path="home-screen/:token" element={<HomeScreen />} />
         <Route path="questionario/:token" element={<Questionario />} />
 
-        {/*///////////////////////////////////ADMIN E RH//////////////////////////////////////////////////*/}
+        {/* ///////////////////////////////////ADMIN E RH////////////////////////////////////////////////// */}
         <Route element={<RequireAuth allowedRoles={[Roles.Rh, Roles.Admin]} />}>
-          <Route
-            path="cadastro-funcionarios"
-            element={<Cadastrofuncionarios />}
-          />
+          <Route path="cadastro-funcionarios" element={<Cadastrofuncionarios />} />
           <Route path="cadastro-rh" element={<CadastroRH />} />
           <Route path="ver-empresas" element={<VerEmpresas />} />
           <Route path="users" element={<Users />} />
           <Route path="status" element={<Status />} />
-
-          <Route
-            path="avaliacoes/:avaliacaoId"
-            element={<AvaliacaoDetalhe />}
-          />
+          <Route path="avaliacoes/:avaliacaoId" element={<AvaliacaoDetalhe />} />
           <Route path="menu" element={<Menu />} />
           <Route path="perfil" element={<Perfil />} />
           <Route path="avaliacoes" element={<ListarAvaliacoesRH />} />
-
         </Route>
 
         {/* ///////////////////////////////ADMIN/////////////////////////////////////////////////  */}
@@ -67,8 +62,8 @@ function App() {
         <Route element={<RequireAuth allowedRoles={[Roles.Rh]} />}>
           <Route path="criar-setores" element={<CriaSetores />} />
         </Route>
-      </Route>
-    </Routes>
+      </Routes>
+    </div>
   );
 }
 

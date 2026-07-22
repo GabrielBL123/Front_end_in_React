@@ -1,12 +1,9 @@
-//import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 const Menu = () => {
   const { auth, setAuth } = useAuth();
   const navigate = useNavigate();
-
-  //const [linkCopiado, setLinkCopiado] = useState(false);
 
   // Rota da Home Screen
   const ROTA_HOME_SCREEN = "/home";
@@ -45,10 +42,10 @@ const Menu = () => {
 
   if (isAdmin) {
     return (
-      <>
+      <div className="w-full min-h-screen flex items-center justify-center p-4 md:p-8">
         {fontStyles}
         <div
-          className="psy-shell w-full max-w-6xl p-8 md:p-14 rounded-3xl my-8 mx-auto"
+          className="psy-shell w-full max-w-6xl p-8 md:p-14 rounded-3xl"
           style={{
             backgroundColor: "#FCFBF7",
             boxShadow: "0 30px 60px -25px rgba(24,42,40,0.35)",
@@ -113,16 +110,16 @@ const Menu = () => {
             />
           </div>
         </div>
-      </>
+      </div>
     );
   }
 
   if (isRH) {
     return (
-      <>
+      <div className="w-full min-h-screen flex items-center justify-center p-4 md:p-8">
         {fontStyles}
         <div
-          className="psy-shell w-full max-w-6xl p-8 md:p-14 rounded-3xl my-8 mx-auto"
+          className="psy-shell w-full max-w-6xl p-8 md:p-14 rounded-3xl"
           style={{
             backgroundColor: "#FCFBF7",
             boxShadow: "0 30px 60px -25px rgba(24,42,40,0.35)",
@@ -188,15 +185,15 @@ const Menu = () => {
             />
           </div>
         </div>
-      </>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="w-full min-h-screen flex items-center justify-center p-4 md:p-8">
       {fontStyles}
       <div
-        className="psy-shell w-full max-w-3xl p-8 rounded-3xl my-8 mx-auto text-center"
+        className="psy-shell w-full max-w-3xl p-8 rounded-3xl text-center"
         style={{
           backgroundColor: "#FCFBF7",
           boxShadow: "0 30px 60px -25px rgba(24,42,40,0.35)",
@@ -218,7 +215,7 @@ const Menu = () => {
           Voltar para Login
         </button>
       </div>
-    </>
+    </div>
   );
 };
 

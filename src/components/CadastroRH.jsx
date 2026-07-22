@@ -112,54 +112,186 @@ const CadastroRH = () => {
   };
 
   return (
-    <>
+    <div className="w-full min-h-screen flex items-center justify-center p-4 md:p-8">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Public+Sans:wght@400;500;600&display=swap');
+        .psy-shell { font-family: 'Public Sans', system-ui, sans-serif; }
+        .psy-display { font-family: 'Fraunces', serif; font-optical-sizing: auto; }
+        .psy-input {
+          background-color: #ffffff;
+          border: 1px solid #d8d6cb;
+          color: #23302b;
+        }
+        .psy-input::placeholder { color: #9ca39c; }
+        .psy-input:focus {
+          outline: none;
+          border-color: #6e8f76;
+          box-shadow: 0 0 0 3px rgba(110, 143, 118, 0.18);
+        }
+        .psy-btn {
+          background-color: #1e3835;
+          color: #f3f1e9;
+        }
+        .psy-btn:hover { background-color: #254440; }
+        .psy-btn-secondary {
+          background-color: transparent;
+          color: #3a423e;
+          border: 1px solid #d8d6cb;
+        }
+        .psy-btn-secondary:hover { background-color: #f3f1e9; }
+      `}</style>
+
       {success ? (
-        <div className="w-full max-w-2xl bg-white p-10 rounded-3xl shadow-2xl my-8 text-center mx-auto">
-          <h1 className="text-4xl font-extrabold text-green-700 mb-6">
+        <div 
+          className="psy-shell w-full max-w-2xl p-10 md:p-14 rounded-3xl text-center mx-auto"
+          style={{
+            backgroundColor: "#FCFBF7",
+            boxShadow: "0 30px 60px -25px rgba(24,42,40,0.35)",
+            border: "1px solid #DCD9CC",
+          }}
+        >
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl" style={{ backgroundColor: "#E3F0E6", color: "#2F5C3E" }}>
+            ✓
+          </div>
+          <h1 className="psy-display text-4xl mb-4" style={{ color: "#1F2A27" }}>
             Sucesso!
           </h1>
-          <p className="text-xl text-gray-700 mb-4">
+          <p className="text-lg font-medium mb-2" style={{ color: "#5C7D63" }}>
             Registro de RH e Empresa concluído.
           </p>
-          <p className="text-lg text-blue-600 font-medium mb-8">
+          <p className="text-base mb-10 leading-relaxed" style={{ color: "#6B7570" }}>
             O link de acesso foi enviado com sucesso para o e-mail informado.
           </p>
-          {/* Mensagem de carregamento removida. O botão aguarda o clique do usuário: */}
           <button
             onClick={() => navigate("/menu")}
-            className="px-8 py-3 bg-green-600 hover:bg-green-500 text-white text-lg font-bold rounded-lg shadow-md transition-all"
+            className="psy-btn px-8 py-3.5 font-semibold rounded-xl transition-all shadow-sm w-full sm:w-auto"
           >
             Voltar ao Painel Admin
           </button>
         </div>
       ) : (
-        <div className="w-full max-w-4xl bg-white p-10 md:p-14 rounded-3xl shadow-2xl my-8 mx-auto">
-          <div className="flex justify-center mb-8 border-b-2 border-green-100 pb-4">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-green-700">
+        <div 
+          className="psy-shell w-full max-w-4xl p-8 md:p-14 rounded-3xl mx-auto"
+          style={{
+            backgroundColor: "#FCFBF7",
+            boxShadow: "0 30px 60px -25px rgba(24,42,40,0.35)",
+            border: "1px solid #DCD9CC",
+          }}
+        >
+          <div className="mb-10 border-b pb-6" style={{ borderBottomColor: "#E4E1D3" }}>
+            <div className="flex items-center gap-3 mb-2">
+              <span className="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style={{ backgroundColor: "#C7A76B", color: "#1F2A27" }}>
+                ✚
+              </span>
+              <p className="text-xs tracking-[0.25em] uppercase font-bold" style={{ color: "#5C7D63" }}>
+                Administração
+              </p>
+            </div>
+            <h2 className="psy-display text-3xl md:text-4xl" style={{ color: "#1F2A27" }}>
               Registrar RH e Empresa
             </h2>
+            <p className="mt-2 text-sm" style={{ color: "#6B7570" }}>
+              Preencha os dados abaixo para cadastrar um novo cliente no sistema.
+            </p>
           </div>
 
           <p
             ref={errRef}
-            className={
+            className={errMsg ? "block w-full p-4 rounded-xl text-center mb-8 text-sm font-medium" : "hidden"}
+            style={
               errMsg
-                ? "block w-full bg-red-100 border border-red-300 text-red-700 font-bold p-4 rounded-lg text-center mb-6"
-                : "hidden"
+                ? {
+                    border: "1px solid rgba(201,123,107,0.4)",
+                    backgroundColor: "rgba(201,123,107,0.1)",
+                    color: "#8a3e31",
+                  }
+                : undefined
             }
             aria-live="assertive"
           >
             {errMsg}
           </p>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              
+              {/* DADOS DA EMPRESA */}
+              <div className="md:col-span-2">
+                <h3 className="font-semibold text-lg border-b pb-2 mb-4" style={{ color: "#3a423e", borderBottomColor: "#E4E1D3" }}>
+                  Dados da Empresa
+                </h3>
+              </div>
+
               <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="nome"
-                  className="font-semibold text-gray-700 text-lg"
-                >
-                  Nome Completo (Admin):
+                <label htmlFor="nomeEmpresa" className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                  Nome da Empresa
+                </label>
+                <input
+                  type="text"
+                  id="nomeEmpresa"
+                  onChange={(e) => setNomeEmpresa(e.target.value)}
+                  value={nomeEmpresa}
+                  required
+                  placeholder="Ex: Tech Solutions Ltda"
+                  className="psy-input w-full px-4 py-3 rounded-xl transition-shadow sm:text-sm"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="cnpj" className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                  CNPJ
+                </label>
+                <input
+                  type="text"
+                  id="cnpj"
+                  onChange={(e) => setCnpj(e.target.value)}
+                  value={cnpj}
+                  required
+                  placeholder="Ex: 00.000.000/0001-00"
+                  className="psy-input w-full px-4 py-3 rounded-xl transition-shadow sm:text-sm"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="emailEmpresa" className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                  E-mail Comercial
+                </label>
+                <input
+                  type="email"
+                  id="emailEmpresa"
+                  onChange={(e) => setEmailEmpresa(e.target.value)}
+                  value={emailEmpresa}
+                  required
+                  placeholder="Ex: contato@empresa.com.br"
+                  className="psy-input w-full px-4 py-3 rounded-xl transition-shadow sm:text-sm"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="telefoneEmpresa" className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                  Telefone
+                </label>
+                <input
+                  type="text"
+                  id="telefoneEmpresa"
+                  onChange={(e) => setTelefoneEmpresa(e.target.value)}
+                  value={telefoneEmpresa}
+                  required
+                  placeholder="Ex: (00) 00000-0000"
+                  className="psy-input w-full px-4 py-3 rounded-xl transition-shadow sm:text-sm"
+                />
+              </div>
+
+              {/* DADOS DO RESPONSÁVEL (RH) */}
+              <div className="md:col-span-2 mt-4">
+                <h3 className="font-semibold text-lg border-b pb-2 mb-4" style={{ color: "#3a423e", borderBottomColor: "#E4E1D3" }}>
+                  Dados do Responsável (RH)
+                </h3>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="nome" className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                  Nome Completo
                 </label>
                 <input
                   type="text"
@@ -168,16 +300,13 @@ const CadastroRH = () => {
                   value={nome}
                   required
                   placeholder="Ex: Ana Silva"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
+                  className="psy-input w-full px-4 py-3 rounded-xl transition-shadow sm:text-sm"
                 />
               </div>
 
               <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="login"
-                  className="font-semibold text-gray-700 text-lg"
-                >
-                  E-mail de Acesso (Login):
+                <label htmlFor="login" className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                  E-mail de Acesso (Login)
                 </label>
                 <input
                   type="email"
@@ -187,85 +316,13 @@ const CadastroRH = () => {
                   value={login}
                   required
                   placeholder="Ex: ana.silva@empresa.com.br"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
+                  className="psy-input w-full px-4 py-3 rounded-xl transition-shadow sm:text-sm"
                 />
               </div>
 
               <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="nomeEmpresa"
-                  className="font-semibold text-gray-700 text-lg"
-                >
-                  Nome da Empresa:
-                </label>
-                <input
-                  type="text"
-                  id="nomeEmpresa"
-                  onChange={(e) => setNomeEmpresa(e.target.value)}
-                  value={nomeEmpresa}
-                  required
-                  placeholder="Ex: Tech Solutions Ltda"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="cnpj"
-                  className="font-semibold text-gray-700 text-lg"
-                >
-                  CNPJ da Empresa:
-                </label>
-                <input
-                  type="text"
-                  id="cnpj"
-                  onChange={(e) => setCnpj(e.target.value)}
-                  value={cnpj}
-                  required
-                  placeholder="Ex: 00.000.000/0001-00"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="emailEmpresa"
-                  className="font-semibold text-gray-700 text-lg"
-                >
-                  E-mail Comercial (Empresa):
-                </label>
-                <input
-                  type="email"
-                  id="emailEmpresa"
-                  onChange={(e) => setEmailEmpresa(e.target.value)}
-                  value={emailEmpresa}
-                  required
-                  placeholder="Ex: contato@empresa.com.br"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label htmlFor="telefoneEmpresa" className="font-semibold text-gray-700 text-lg">
-                  Telefone da Empresa:
-                </label>
-                <input
-                  type="text"
-                  id="telefoneEmpresa"
-                  onChange={(e) => setTelefoneEmpresa(e.target.value)}
-                  value={telefoneEmpresa}
-                  required
-                  placeholder="Ex: (00) 00000-0000"
-                  className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="password"
-                  className="font-semibold text-gray-700 text-lg"
-                >
-                  Senha Temporária:
+                <label htmlFor="password" className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                  Senha Temporária
                 </label>
                 <input
                   type="password"
@@ -273,16 +330,13 @@ const CadastroRH = () => {
                   onChange={(e) => setPwd(e.target.value)}
                   value={pwd}
                   required
-                  className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
+                  className="psy-input w-full px-4 py-3 rounded-xl transition-shadow sm:text-sm"
                 />
               </div>
 
               <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="confirm_pwd"
-                  className="font-semibold text-gray-700 text-lg"
-                >
-                  Confirmar Senha:
+                <label htmlFor="confirm_pwd" className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                  Confirmar Senha
                 </label>
                 <input
                   type="password"
@@ -290,15 +344,15 @@ const CadastroRH = () => {
                   onChange={(e) => setMatchPwd(e.target.value)}
                   value={matchPwd}
                   required
-                  className="w-full px-5 py-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
+                  className="psy-input w-full px-4 py-3 rounded-xl transition-shadow sm:text-sm"
                 />
               </div>
             </div>
 
-            <div className="mt-6 flex flex-col gap-4">
+            <div className="mt-4 flex flex-col md:flex-row gap-4">
               <button
                 type="submit"
-                className="w-full py-4 px-6 bg-green-600 hover:bg-green-500 text-white text-xl font-bold rounded-lg shadow-md transition-all"
+                className="psy-btn flex-1 py-3.5 px-6 font-semibold rounded-xl shadow-md transition-all text-sm"
               >
                 Registrar Empresa e RH
               </button>
@@ -306,7 +360,7 @@ const CadastroRH = () => {
               <button
                 type="button"
                 onClick={() => navigate("/menu")}
-                className="w-full py-3 px-6 bg-gray-100 hover:bg-gray-200 text-gray-600 text-lg font-bold rounded-lg transition-all border border-gray-300"
+                className="psy-btn-secondary flex-1 py-3.5 px-6 font-semibold rounded-xl transition-all text-sm"
               >
                 Voltar ao Painel Admin
               </button>
@@ -314,7 +368,7 @@ const CadastroRH = () => {
           </form>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

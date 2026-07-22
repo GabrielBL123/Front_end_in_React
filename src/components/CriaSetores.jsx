@@ -21,7 +21,7 @@ const CriaSetores = () => {
     try {
       if (auth?.avaliacaoAtivaId) {
         setErro(
-          "Nâo é possivel gerenciar setores enquanto uma avaliação estiver ativa.",
+          "Não é possível gerenciar setores enquanto uma avaliação estiver ativa.",
         );
       }
 
@@ -31,7 +31,6 @@ const CriaSetores = () => {
 
       const todosSetores = response.data?.data?.content || [];
 
-      // ✨ FILTRO MÁGICO: Pega apenas os setores onde o ID da empresa bate com o ID da empresa do usuário logado
       const setoresDaEmpresa = todosSetores.filter(
         (s) => s.empresaId === auth?.empresaId,
       );
@@ -58,7 +57,6 @@ const CriaSetores = () => {
         "/setores/criar",
         {
           setor: nomeSetor,
-          // Enviamos o empresaId no campo cnpj caso o seu RegistrarSetorDTO exija esse campo para não dar erro 400
           cnpj: auth?.empresaId,
         },
         { headers: { Authorization: `Bearer ${auth?.accessToken}` } },
@@ -66,7 +64,7 @@ const CriaSetores = () => {
 
       setMensagem("Setor criado com sucesso!");
       setNomeSetor("");
-      buscarSetores(); // Atualiza a lista na tela automaticamente
+      buscarSetores();
 
       setTimeout(() => setMensagem(""), 3000);
     } catch (err) {
@@ -109,101 +107,161 @@ const CriaSetores = () => {
   };
 
   return (
-    <div className="w-full max-w-5xl bg-white p-8 md:p-14 rounded-3xl shadow-2xl my-8 mx-auto">
-      {/* Cabeçalho */}
-      <div className="flex justify-between items-center mb-10 border-b-2 border-green-100 pb-5">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-green-700">
-            Gerenciamento de Setores
-          </h1>
-          <p className="text-gray-500 mt-1 text-base">
-            Cadastre ou remova setores da empresa{" "}
-            <span className="font-bold text-gray-700">{auth?.empresaNome}</span>
-          </p>
-        </div>
-        <button
-          onClick={() => navigate("/menu")}
-          className="px-5 py-2.5 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-all border border-gray-300 shadow-sm text-sm"
+    <div 
+      className="w-full min-h-screen flex flex-col items-center p-4 md:p-8"
+      style={{ backgroundColor: "#EDEEE8", colorScheme: "light" }}
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Public+Sans:wght@400;500;600&display=swap');
+        .psy-shell { font-family: 'Public Sans', system-ui, sans-serif; }
+        .psy-display { font-family: 'Fraunces', serif; font-optical-sizing: auto; }
+        .psy-input {
+          background-color: #ffffff;
+          border: 1px solid #d8d6cb;
+          color: #23302b;
+        }
+        .psy-input::placeholder { color: #9ca39c; }
+        .psy-input:focus {
+          outline: none;
+          border-color: #6e8f76;
+          box-shadow: 0 0 0 3px rgba(110, 143, 118, 0.18);
+        }
+        .psy-btn {
+          background-color: #1e3835;
+          color: #f3f1e9;
+        }
+        .psy-btn:hover { background-color: #254440; }
+        .psy-btn-secondary {
+          background-color: transparent;
+          color: #3A423E;
+          border: 1px solid #D8D6CB;
+        }
+        .psy-btn-secondary:hover { background-color: #F3F1E9; }
+      `}</style>
+
+      <div className="w-full max-w-5xl mx-auto space-y-8">
+        {/* Cabeçalho */}
+        <div 
+          className="psy-shell w-full p-8 md:p-12 rounded-3xl flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm"
+          style={{
+            backgroundColor: "#FCFBF7",
+            boxShadow: "0 30px 60px -25px rgba(24,42,40,0.35)",
+            border: "1px solid #DCD9CC",
+          }}
         >
-          Voltar ao Menu
-        </button>
-      </div>
-
-      {/* Mensagens de Feedback */}
-      {mensagem && (
-        <p className="w-full bg-green-100 border border-green-300 text-green-800 font-bold p-4 rounded-xl text-center mb-6 animate-fade-in">
-          {mensagem}
-        </p>
-      )}
-      {erro && (
-        <p className="w-full bg-red-100 border border-red-300 text-red-700 font-bold p-4 rounded-xl text-center mb-6 animate-fade-in">
-          {erro}
-        </p>
-      )}
-
-      {/* Formulário de Cadastro (Sem a caixa de CNPJ) */}
-      <form
-        onSubmit={handleSalvar}
-        className="bg-gray-50 p-6 md:p-8 rounded-2xl border border-gray-200 mb-12 flex flex-col md:flex-row items-end gap-6 shadow-inner"
-      >
-        <div className="flex flex-col gap-2 w-full">
-          <label
-            htmlFor="nomeSetor"
-            className="font-semibold text-gray-700 text-base md:text-lg"
-          >
-            Nome do Novo Setor:
-          </label>
-          <input
-            type="text"
-            id="nomeSetor"
-            value={nomeSetor}
-            onChange={(e) => setNomeSetor(e.target.value)}
-            placeholder="Ex: Tecnologia da Informação, RH, Comercial..."
-            className="w-full px-5 py-4 border border-gray-300 rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg transition-all shadow-sm"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full md:w-auto py-4 px-8 h-fit bg-green-600 text-white font-bold text-lg rounded-xl hover:bg-green-700 hover:shadow-lg active:scale-95 transition-all shadow-md whitespace-nowrap"
-        >
-          Salvar Setor
-        </button>
-      </form>
-
-      {/* Lista de Setores (Layout Div / Tags Roxas) */}
-      <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-l-4 border-purple-500 pl-3">
-          Setores Cadastrados ({setores.length})
-        </h3>
-
-        {setores.length > 0 ? (
-          <div className="flex flex-wrap gap-3">
-            {setores.map((setor, idx) => (
-              <span
-                key={setor.id || idx}
-                className="bg-purple-100 border border-purple-200 text-purple-700 text-sm font-bold px-4 py-2 rounded-full flex items-center gap-2 shadow-sm transition-all hover:bg-purple-200"
-              >
-                {setor.nome || setor.nomeSetor || setor.setor}
-
-                {setor.id && (
-                  <button
-                    type="button"
-                    onClick={() => handleDeletar(setor.id)}
-                    className="flex items-center justify-center w-5 h-5 rounded-full text-red-500 hover:text-white hover:bg-red-500 transition-colors focus:outline-none ml-1"
-                    title="Deletar setor"
-                  >
-                    &times;
-                  </button>
-                )}
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <span className="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style={{ backgroundColor: "#C7A76B", color: "#1F2A27" }}>
+                🏢
               </span>
-            ))}
+              <p className="text-xs tracking-[0.25em] uppercase font-bold" style={{ color: "#5C7D63" }}>
+                Recursos Humanos
+              </p>
+            </div>
+            <h1 className="psy-display text-4xl md:text-5xl" style={{ color: "#1F2A27" }}>
+              Gerenciamento de Setores
+            </h1>
+            <p className="mt-2 text-base" style={{ color: "#6B7570" }}>
+              Cadastre ou remova setores da empresa{" "}
+              <span className="font-bold" style={{ color: "#1E3835" }}>{auth?.empresaNome}</span>
+            </p>
           </div>
-        ) : (
-          <p className="text-sm text-gray-400 italic">
-            Nenhum setor cadastrado para esta empresa.
-          </p>
+          
+          <button
+            onClick={() => navigate("/menu")}
+            className="psy-btn-secondary px-8 py-3.5 font-semibold rounded-xl transition-all shadow-sm w-full md:w-auto text-sm"
+          >
+            Voltar ao Menu
+          </button>
+        </div>
+
+        {/* Mensagens de Feedback */}
+        {mensagem && (
+          <div className="psy-shell w-full p-4 rounded-xl text-center font-bold text-sm" style={{ border: "1px solid rgba(110,143,118,0.4)", backgroundColor: "rgba(110,143,118,0.1)", color: "#1E3835" }}>
+            {mensagem}
+          </div>
         )}
+        {erro && (
+          <div className="psy-shell w-full p-4 rounded-xl text-center font-bold text-sm" style={{ border: "1px solid rgba(201,123,107,0.4)", backgroundColor: "rgba(201,123,107,0.1)", color: "#8A3E31" }}>
+            {erro}
+          </div>
+        )}
+
+        {/* Formulário de Cadastro */}
+        <form
+          onSubmit={handleSalvar}
+          className="psy-shell p-8 md:p-10 rounded-3xl flex flex-col md:flex-row items-end gap-6 shadow-sm"
+          style={{ backgroundColor: "#FCFBF7", border: "1px solid #DCD9CC" }}
+        >
+          <div className="flex flex-col gap-2 w-full">
+            <label
+              htmlFor="nomeSetor"
+              className="text-sm font-semibold"
+              style={{ color: "#3a423e" }}
+            >
+              Nome do Novo Setor:
+            </label>
+            <input
+              type="text"
+              id="nomeSetor"
+              value={nomeSetor}
+              onChange={(e) => setNomeSetor(e.target.value)}
+              placeholder="Ex: Tecnologia da Informação, RH, Comercial..."
+              className="psy-input w-full px-4 py-3 rounded-xl sm:text-sm"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="psy-btn w-full md:w-auto py-3.5 px-8 h-fit font-semibold rounded-xl transition-all shadow-sm whitespace-nowrap text-sm"
+          >
+            Salvar Setor
+          </button>
+        </form>
+
+        {/* Lista de Setores */}
+        <div className="psy-shell p-8 rounded-3xl shadow-sm" style={{ backgroundColor: "#FCFBF7", border: "1px solid #DCD9CC" }}>
+          <h3 className="text-xs font-bold uppercase tracking-wider mb-6 flex items-center gap-2 pb-3 border-b" style={{ color: "#5C7D63", borderColor: "#E4E1D3" }}>
+            Setores Cadastrados 
+            <span className="px-2 py-0.5 rounded-full text-[10px]" style={{ backgroundColor: "#E3F0E6" }}>
+              {setores.length}
+            </span>
+          </h3>
+
+          {setores.length > 0 ? (
+            <div className="flex flex-wrap gap-3">
+              {setores.map((setor, idx) => (
+                <span
+                  key={setor.id || idx}
+                  className="text-sm font-semibold px-4 py-2 rounded-full flex items-center gap-2 border shadow-sm transition-all"
+                  style={{ 
+                    backgroundColor: "rgba(199,167,107,0.1)", 
+                    color: "#1F2A27",
+                    borderColor: "rgba(199,167,107,0.3)"
+                  }}
+                >
+                  {setor.nome || setor.nomeSetor || setor.setor}
+
+                  {setor.id && (
+                    <button
+                      type="button"
+                      onClick={() => handleDeletar(setor.id)}
+                      className="flex items-center justify-center w-5 h-5 rounded-full transition-colors focus:outline-none ml-1 text-xs"
+                      style={{ color: "#8A3E31", backgroundColor: "rgba(201,123,107,0.15)" }}
+                      title="Deletar setor"
+                    >
+                      &times;
+                    </button>
+                  )}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm italic" style={{ color: "#8B9188" }}>
+              Nenhum setor cadastrado para esta empresa.
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

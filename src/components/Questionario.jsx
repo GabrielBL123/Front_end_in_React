@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-// Como não há login, você deve importar a instância normal do Axios (ajuste o caminho se necessário)
 import { axiosPrivate as axios } from "../api/axios";
+import "../tailwind.css";
 
 const fatoresQuestionario = [
   {
@@ -334,15 +334,11 @@ const fatoresQuestionario = [
 
 const Questionario = () => {
   const navigate = useNavigate();
-  const { token: tokenId } = useParams(); // ✨ Extrai o token gerado da URL
+  const { token: tokenId } = useParams();
 
-  // Estado para armazenar os setores trazidos da API
   const [setores, setSetores] = useState([]);
-
-  // Controle das Etapas do Formulário (1 = Cadastro, 2 = Questionário)
   const [etapa, setEtapa] = useState(1);
 
-  // Estado para armazenar os dados do DTO de resposta
   const [dadosFuncionario, setDadosFuncionario] = useState({
     nome: "",
     email: "",
@@ -353,58 +349,19 @@ const Questionario = () => {
   });
 
   const estadoInicialRespostas = {
-    F1_P1: "",
-    F1_P2: "",
-    F1_P3: "",
-    F1_P4: "",
-    F2_P1: "",
-    F2_P2: "",
-    F2_P3: "",
-    F2_P4: "",
-    F3_P1: "",
-    F3_P2: "",
-    F3_P3: "",
-    F3_P4: "",
-    F4_P1: "",
-    F4_P2: "",
-    F4_P3: "",
-    F4_P4: "",
-    F5_P1: "",
-    F5_P2: "",
-    F5_P3: "",
-    F5_P4: "",
-    F6_P1: "",
-    F6_P2: "",
-    F6_P3: "",
-    F6_P4: "",
-    F7_P1: "",
-    F7_P2: "",
-    F7_P3: "",
-    F7_P4: "",
-    F8_P1: "",
-    F8_P2: "",
-    F8_P3: "",
-    F8_P4: "",
-    F9_P1: "",
-    F9_P2: "",
-    F9_P3: "",
-    F9_P4: "",
-    F10_P1: "",
-    F10_P2: "",
-    F10_P3: "",
-    F10_P4: "",
-    F11_P1: "",
-    F11_P2: "",
-    F11_P3: "",
-    F11_P4: "",
-    F12_P1: "",
-    F12_P2: "",
-    F12_P3: "",
-    F12_P4: "",
-    F13_P1: "",
-    F13_P2: "",
-    F13_P3: "",
-    F13_P4: "",
+    F1_P1: "", F1_P2: "", F1_P3: "", F1_P4: "",
+    F2_P1: "", F2_P2: "", F2_P3: "", F2_P4: "",
+    F3_P1: "", F3_P2: "", F3_P3: "", F3_P4: "",
+    F4_P1: "", F4_P2: "", F4_P3: "", F4_P4: "",
+    F5_P1: "", F5_P2: "", F5_P3: "", F5_P4: "",
+    F6_P1: "", F6_P2: "", F6_P3: "", F6_P4: "",
+    F7_P1: "", F7_P2: "", F7_P3: "", F7_P4: "",
+    F8_P1: "", F8_P2: "", F8_P3: "", F8_P4: "",
+    F9_P1: "", F9_P2: "", F9_P3: "", F9_P4: "",
+    F10_P1: "", F10_P2: "", F10_P3: "", F10_P4: "",
+    F11_P1: "", F11_P2: "", F11_P3: "", F11_P4: "",
+    F12_P1: "", F12_P2: "", F12_P3: "", F12_P4: "",
+    F13_P1: "", F13_P2: "", F13_P3: "", F13_P4: "",
   };
 
   const [respostas, setRespostas] = useState(estadoInicialRespostas);
@@ -415,10 +372,7 @@ const Questionario = () => {
     const buscarSetoresDaAvaliacao = async () => {
       try {
         const response = await axios.get(`/resposta/responder/${tokenId}`);
-
-        // Pega os dados com base na estrutura do seu backend ({ message, data })
         const avaliacao = response.data.data || response.data;
-
         setSetores(avaliacao.nomeSetor);
       } catch (err) {
         console.error("Erro ao carregar a avaliação e os setores:", err);
@@ -472,12 +426,10 @@ const Questionario = () => {
       });
     });
 
-    // Formatação EXATA para o LocalDateTime do Java
     const dataFormatadaJava = dadosFuncionario.dataAdmissao
       ? `${dadosFuncionario.dataAdmissao}T00:00:00`
       : new Date().toISOString().split(".")[0];
 
-    // Objeto DTO impecável para casar com RespostaDTO
     const payloadDTO = {
       nome: dadosFuncionario.nome,
       login: dadosFuncionario.email,
@@ -489,7 +441,6 @@ const Questionario = () => {
     };
 
     try {
-      // ⚠️ Aponta diretamente para o seu RespostaController!
       await axios.post(
         `/resposta/responder/${tokenId}`,
         JSON.stringify(payloadDTO),
@@ -515,251 +466,289 @@ const Questionario = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl bg-white rounded-2xl p-8 md:p-10 shadow-2xl my-8 mx-auto">
-      {/* Breadcrumb de Progresso */}
-      <div className="flex justify-center mb-8">
-        <div className="flex items-center gap-4">
-          <span
-            className={`px-4 py-2 rounded-full font-bold text-sm transition-colors ${etapa === 1 ? "bg-green-600 text-white shadow-md" : "bg-green-100 text-green-700"}`}
-          >
-            1. Identificação
-          </span>
-          <div className="w-10 h-1 bg-gray-200 rounded-full">
-            <div
-              className={`h-full rounded-full transition-all duration-500 ${etapa === 2 ? "bg-green-500 w-full" : "w-0"}`}
-            ></div>
+    <div 
+      className="w-full min-h-screen flex flex-col items-center p-4 md:p-8"
+      style={{ backgroundColor: "#EDEEE8", colorScheme: "light" }}
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Public+Sans:wght@400;500;600&display=swap');
+        .psy-shell { font-family: 'Public Sans', system-ui, sans-serif; }
+        .psy-display { font-family: 'Fraunces', serif; font-optical-sizing: auto; }
+        .psy-input {
+          background-color: #ffffff;
+          border: 1px solid #d8d6cb;
+          color: #23302b;
+        }
+        .psy-input::placeholder { color: #9ca39c; }
+        .psy-input:focus {
+          outline: none;
+          border-color: #6e8f76;
+          box-shadow: 0 0 0 3px rgba(110, 143, 118, 0.18);
+        }
+        .psy-btn {
+          background-color: #1e3835;
+          color: #f3f1e9;
+        }
+        .psy-btn:hover { background-color: #254440; }
+        .psy-btn-secondary {
+          background-color: transparent;
+          color: #3A423E;
+          border: 1px solid #D8D6CB;
+        }
+        .psy-btn-secondary:hover { background-color: #F3F1E9; }
+      `}</style>
+
+      <div 
+        className="psy-shell w-full max-w-4xl p-8 md:p-12 rounded-3xl shadow-xl my-8"
+        style={{ backgroundColor: "#FCFBF7", border: "1px solid #DCD9CC" }}
+      >
+        {/* Breadcrumb de Progresso */}
+        <div className="flex justify-center mb-8">
+          <div className="flex items-center gap-4">
+            <span
+              className={`px-4 py-2 rounded-full font-bold text-xs uppercase tracking-wider transition-colors ${etapa === 1 ? "bg-[#1E3835] text-[#F3F1E9] shadow-sm" : "bg-[#EDEEE8] text-[#5C7D63]"}`}
+            >
+              1. Identificação
+            </span>
+            <div className="w-10 h-1 rounded-full" style={{ backgroundColor: "#E4E1D3" }}>
+              <div
+                className={`h-full rounded-full transition-all duration-500 ${etapa === 2 ? "bg-[#6E8F76] w-full" : "w-0"}`}
+              ></div>
+            </div>
+            <span
+              className={`px-4 py-2 rounded-full font-bold text-xs uppercase tracking-wider transition-colors ${etapa === 2 ? "bg-[#1E3835] text-[#F3F1E9] shadow-sm" : "bg-[#EDEEE8] text-[#8B9188]"}`}
+            >
+              2. Questionário
+            </span>
           </div>
-          <span
-            className={`px-4 py-2 rounded-full font-bold text-sm transition-colors ${etapa === 2 ? "bg-green-600 text-white shadow-md" : "bg-gray-100 text-gray-500"}`}
-          >
-            2. Questionário
-          </span>
         </div>
-      </div>
 
-      <h2 className="text-3xl md:text-4xl font-bold text-center text-green-700 mb-4">
-        Mapeamento de Saúde Organizacional
-      </h2>
-      <p className="text-center text-gray-500 text-lg mb-8">
-        {etapa === 1
-          ? "Preencha seus dados para iniciar a avaliação."
-          : "Responda com sinceridade. Suas respostas são sigilosas."}
-      </p>
+        <div className="text-center mb-8">
+          <h2 className="psy-display text-3xl md:text-4xl mb-3" style={{ color: "#1F2A27" }}>
+            Mapeamento de Saúde Organizacional
+          </h2>
+          <p className="text-base" style={{ color: "#6B7570" }}>
+            {etapa === 1
+              ? "Preencha seus dados para iniciar a avaliação."
+              : "Responda com sinceridade. Suas respostas são sigilosas."}
+          </p>
+        </div>
 
-      {msgErro && (
-        <p className="mb-6 text-red-600 font-bold text-center bg-red-50 p-4 rounded-xl">
-          {msgErro}
-        </p>
-      )}
-      {msgSucesso && (
-        <p className="mb-6 text-green-600 font-bold text-center bg-green-50 p-4 rounded-xl animate-pulse">
-          {msgSucesso}
-        </p>
-      )}
+        {msgErro && (
+          <div className="mb-6 p-4 rounded-xl text-center font-medium text-sm" style={{ border: "1px solid rgba(201,123,107,0.4)", backgroundColor: "rgba(201,123,107,0.1)", color: "#8A3E31" }}>
+            {msgErro}
+          </div>
+        )}
+        {msgSucesso && (
+          <div className="mb-6 p-4 rounded-xl text-center font-medium text-sm animate-pulse" style={{ border: "1px solid rgba(110,143,118,0.4)", backgroundColor: "rgba(110,143,118,0.1)", color: "#1E3835" }}>
+            {msgSucesso}
+          </div>
+        )}
 
-      {/* ==================== ETAPA 1: CADASTRO ==================== */}
-      {etapa === 1 && (
-        <form
-          onSubmit={avancarEtapa}
-          className="bg-gray-50 border border-gray-200 rounded-xl p-6 shadow-inner animate-fade-in"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex flex-col">
-              <label className="text-sm text-gray-600 font-semibold mb-1">
-                Nome Completo *
-              </label>
-              <input
-                type="text"
-                name="nome"
-                value={dadosFuncionario.nome}
-                onChange={handleDadosChange}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-black bg-white"
-                required
-              />
-            </div>
+        {/* ==================== ETAPA 1: CADASTRO ==================== */}
+        {etapa === 1 && (
+          <form
+            onSubmit={avancarEtapa}
+            className="p-8 rounded-2xl border shadow-inner space-y-6"
+            style={{ backgroundColor: "#EDEEE8", borderColor: "#D8D6CB" }}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                  Nome Completo *
+                </label>
+                <input
+                  type="text"
+                  name="nome"
+                  value={dadosFuncionario.nome}
+                  onChange={handleDadosChange}
+                  className="psy-input px-4 py-3 rounded-xl sm:text-sm"
+                  required
+                />
+              </div>
 
-            <div className="flex flex-col">
-              <label className="text-sm text-gray-600 font-semibold mb-1">
-                E-mail Corporativo *
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={dadosFuncionario.email}
-                onChange={handleDadosChange}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-black bg-white"
-                required
-              />
-            </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                  E-mail Corporativo *
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={dadosFuncionario.email}
+                  onChange={handleDadosChange}
+                  className="psy-input px-4 py-3 rounded-xl sm:text-sm"
+                  required
+                />
+              </div>
 
-            <div className="flex flex-col">
-              <label className="text-sm text-gray-600 font-semibold mb-1">
-                Cargo *
-              </label>
-              <input
-                type="text"
-                name="cargo"
-                value={dadosFuncionario.cargo}
-                onChange={handleDadosChange}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-black bg-white"
-                required
-              />
-            </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                  Cargo *
+                </label>
+                <input
+                  type="text"
+                  name="cargo"
+                  value={dadosFuncionario.cargo}
+                  onChange={handleDadosChange}
+                  className="psy-input px-4 py-3 rounded-xl sm:text-sm"
+                  required
+                />
+              </div>
 
-            <div className="flex flex-col">
-              <label className="text-sm text-gray-600 font-semibold mb-1">
-                Setor *
-              </label>
-              <select
-                name="setor"
-                value={dadosFuncionario.setor}
-                onChange={handleDadosChange}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-black bg-white outline-none cursor-pointer"
-                required
-              >
-                <option value="" disabled className="text-gray-500">
-                  {setores.length > 0
-                    ? "Selecione o setor..."
-                    : "Carregando setores..."}
-                </option>
-
-                {setores.map((setor, idx) => (
-                  <option key={idx} value={setor} className="text-gray-900">
-                    {setor}
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                  Setor *
+                </label>
+                <select
+                  name="setor"
+                  value={dadosFuncionario.setor}
+                  onChange={handleDadosChange}
+                  className="psy-input px-4 py-3 rounded-xl sm:text-sm cursor-pointer"
+                  required
+                >
+                  <option value="" disabled style={{ color: "#9ca39c" }}>
+                    {setores.length > 0
+                      ? "Selecione o setor..."
+                      : "Carregando setores..."}
                   </option>
-                ))}
-              </select>
-            </div>
 
-            <div className="flex flex-col">
-              <label className="text-sm text-gray-600 font-semibold mb-1">
-                Data de Admissão *
-              </label>
-              <input
-                type="date"
-                name="dataAdmissao"
-                value={dadosFuncionario.dataAdmissao}
-                onChange={handleDadosChange}
-                className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-black bg-white"
-                required
-              />
-            </div>
-          </div>
+                  {setores.map((setor, idx) => (
+                    <option key={idx} value={setor} style={{ color: "#1F2A27" }}>
+                      {setor}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-          <div className="flex justify-end mt-8">
-            <button
-              type="submit"
-              className="px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-all shadow-md"
-            >
-              Avançar para Questionário &rarr;
-            </button>
-          </div>
-        </form>
-      )}
-
-      {/* ==================== ETAPA 2: QUESTIONÁRIO ==================== */}
-      {etapa === 2 && (
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-10 animate-fade-in"
-        >
-          <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-            <h3 className="text-center font-bold text-green-800 mb-4 uppercase tracking-wide">
-              Escala de Resposta
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 text-green-900 font-medium text-center text-sm">
-              <span className="bg-white px-2 py-2 rounded shadow-sm">
-                1 – Nunca / Não Existe
-              </span>
-              <span className="bg-white px-2 py-2 rounded shadow-sm">
-                2 – Raramente
-              </span>
-              <span className="bg-white px-2 py-2 rounded shadow-sm">
-                3 – Às vezes
-              </span>
-              <span className="bg-white px-2 py-2 rounded shadow-sm">
-                4 – Frequentemente
-              </span>
-              <span className="bg-white px-2 py-2 rounded shadow-sm">
-                5 – Sempre / Totalmente
-              </span>
-            </div>
-          </div>
-
-          {fatoresQuestionario.map((bloco, index) => (
-            <div
-              key={index}
-              className="flex flex-col gap-5 border-b border-gray-200 pb-10 last:border-none"
-            >
-              <h3 className="text-2xl font-extrabold text-green-800 border-l-4 border-green-500 pl-3">
-                {bloco.fator}
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-2">
-                {bloco.perguntas.map((pergunta) => (
-                  <div
-                    key={pergunta.id}
-                    className="flex flex-col gap-2 bg-gray-50 p-4 rounded-xl border border-gray-100"
-                  >
-                    <span
-                      className={`text-xs font-bold uppercase w-fit px-2 py-1 rounded ${pergunta.tipo === "Percepção" ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"}`}
-                    >
-                      {pergunta.tipo}
-                    </span>
-                    <label className="font-semibold text-gray-800 text-base flex-1">
-                      {pergunta.texto}
-                    </label>
-                    <select
-                      name={pergunta.id}
-                      value={respostas[pergunta.id]}
-                      onChange={handleRespostaChange}
-                      className="w-full mt-2 px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 outline-none focus:ring-2 focus:ring-green-500 cursor-pointer shadow-sm"
-                      required
-                    >
-                      <option value="" className="text-gray-500">
-                        Selecione...
-                      </option>
-                      <option value="1" className="text-gray-900">
-                        1
-                      </option>
-                      <option value="2" className="text-gray-900">
-                        2
-                      </option>
-                      <option value="3" className="text-gray-900">
-                        3
-                      </option>
-                      <option value="4" className="text-gray-900">
-                        4
-                      </option>
-                      <option value="5" className="text-gray-900">
-                        5
-                      </option>
-                    </select>
-                  </div>
-                ))}
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                  Data de Admissão *
+                </label>
+                <input
+                  type="date"
+                  name="dataAdmissao"
+                  value={dadosFuncionario.dataAdmissao}
+                  onChange={handleDadosChange}
+                  className="psy-input px-4 py-3 rounded-xl sm:text-sm"
+                  required
+                />
               </div>
             </div>
-          ))}
 
-          <div className="flex flex-col md:flex-row gap-4 mt-6 pt-4">
-            <button
-              type="button"
-              onClick={() => {
-                setEtapa(1);
-                window.scrollTo(0, 0);
-              }}
-              className="w-full md:w-1/3 py-4 px-6 bg-gray-100 text-gray-700 hover:bg-gray-200 font-bold rounded-xl transition-all"
-            >
-              &larr; Voltar
-            </button>
-            <button
-              type="submit"
-              className="w-full md:w-2/3 py-4 px-6 bg-green-600 hover:bg-green-500 text-white text-xl font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1"
-            >
-              Finalizar e Enviar
-            </button>
-          </div>
-        </form>
-      )}
+            <div className="flex justify-end pt-4">
+              <button
+                type="submit"
+                className="psy-btn px-8 py-3.5 font-semibold rounded-xl transition-all shadow-sm text-sm"
+              >
+                Avançar para Questionário &rarr;
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* ==================== ETAPA 2: QUESTIONÁRIO ==================== */}
+        {etapa === 2 && (
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-10"
+          >
+            <div className="p-6 rounded-2xl border" style={{ backgroundColor: "#EDEEE8", borderColor: "#D8D6CB" }}>
+              <h3 className="text-center font-bold mb-4 uppercase tracking-wider text-xs" style={{ color: "#5C7D63" }}>
+                Escala de Resposta
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 font-medium text-center text-xs">
+                <span className="bg-white px-3 py-2.5 rounded-xl border shadow-sm" style={{ borderColor: "#D8D6CB", color: "#3A423E" }}>
+                  1 – Nunca / Não Existe
+                </span>
+                <span className="bg-white px-3 py-2.5 rounded-xl border shadow-sm" style={{ borderColor: "#D8D6CB", color: "#3A423E" }}>
+                  2 – Raramente
+                </span>
+                <span className="bg-white px-3 py-2.5 rounded-xl border shadow-sm" style={{ borderColor: "#D8D6CB", color: "#3A423E" }}>
+                  3 – Às vezes
+                </span>
+                <span className="bg-white px-3 py-2.5 rounded-xl border shadow-sm" style={{ borderColor: "#D8D6CB", color: "#3A423E" }}>
+                  4 – Frequentemente
+                </span>
+                <span className="bg-white px-3 py-2.5 rounded-xl border shadow-sm" style={{ borderColor: "#D8D6CB", color: "#3A423E" }}>
+                  5 – Sempre / Totalmente
+                </span>
+              </div>
+            </div>
+
+            {fatoresQuestionario.map((bloco, index) => (
+              <div
+                key={index}
+                className="flex flex-col gap-6 border-b pb-10 last:border-none"
+                style={{ borderColor: "#E4E1D3" }}
+              >
+                <h3 className="psy-display text-2xl border-l-4 pl-4 py-1" style={{ color: "#1E3835", borderLeftColor: "#C7A76B" }}>
+                  {bloco.fator}
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {bloco.perguntas.map((pergunta) => (
+                    <div
+                      key={pergunta.id}
+                      className="flex flex-col justify-between gap-3 p-5 rounded-2xl border bg-white shadow-sm"
+                      style={{ borderColor: "#D8D6CB" }}
+                    >
+                      <div>
+                        <span
+                          className={`text-[10px] font-bold uppercase tracking-wider w-fit px-2.5 py-1 rounded-full border mb-2 inline-block ${
+                            pergunta.tipo === "Percepção" 
+                              ? "bg-blue-50 text-blue-700 border-blue-200" 
+                              : "bg-purple-50 text-purple-700 border-purple-200"
+                          }`}
+                        >
+                          {pergunta.tipo}
+                        </span>
+                        <label className="font-semibold text-sm block leading-relaxed" style={{ color: "#1F2A27" }}>
+                          {pergunta.texto}
+                        </label>
+                      </div>
+                      
+                      <select
+                        name={pergunta.id}
+                        value={respostas[pergunta.id]}
+                        onChange={handleRespostaChange}
+                        className="psy-input w-full px-3.5 py-2.5 rounded-xl sm:text-sm cursor-pointer shadow-sm"
+                        required
+                      >
+                        <option value="" style={{ color: "#9ca39c" }}>
+                          Selecione...
+                        </option>
+                        <option value="1" style={{ color: "#1F2A27" }}>1</option>
+                        <option value="2" style={{ color: "#1F2A27" }}>2</option>
+                        <option value="3" style={{ color: "#1F2A27" }}>3</option>
+                        <option value="4" style={{ color: "#1F2A27" }}>4</option>
+                        <option value="5" style={{ color: "#1F2A27" }}>5</option>
+                      </select>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            <div className="flex flex-col md:flex-row gap-4 pt-4 border-t" style={{ borderColor: "#E4E1D3" }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setEtapa(1);
+                  window.scrollTo(0, 0);
+                }}
+                className="psy-btn-secondary w-full md:w-1/3 py-4 px-6 font-semibold rounded-xl transition-all text-sm shadow-sm"
+              >
+                &larr; Voltar
+              </button>
+              <button
+                type="submit"
+                className="psy-btn w-full md:w-2/3 py-4 px-6 font-bold rounded-xl transition-all shadow-lg text-sm"
+              >
+                Finalizar e Enviar
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
     </div>
   );
 };
