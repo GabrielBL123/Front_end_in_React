@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 // Remova a importação do Layout:
-// import Layout from "./components/Layout"; 
+// import Layout from "./components/Layout";
 import Login from "./components/Login";
 import Menu from "./components/Menu";
 import RequireAuth from "./components/RequireAuth";
@@ -16,12 +16,12 @@ import Status from "./components/Status";
 import CriarAvaliacao from "./components/CriarAvaliacao";
 import AvaliacaoDetalhe from "./components/AvaliacaoDetalhe";
 import VerEmpresas from "./components/VerEmpresas";
-import ListarAvaliacoesRH from "./components/ListarAvaliacoesRH"; 
+import ListarAvaliacoesRH from "./components/ListarAvaliacoesRH";
 
 const Roles = {
-  User: "USER",
-  Rh: "RH",
-  Admin: "ADMIN",
+  User: "ROLE_USER",
+  Rh: "ROLE_RH",
+  Admin: "ROLE_ADMIN",
 };
 
 function App() {
@@ -42,12 +42,18 @@ function App() {
 
         {/* ///////////////////////////////////ADMIN E RH////////////////////////////////////////////////// */}
         <Route element={<RequireAuth allowedRoles={[Roles.Rh, Roles.Admin]} />}>
-          <Route path="cadastro-funcionarios" element={<Cadastrofuncionarios />} />
+          <Route
+            path="cadastro-funcionarios"
+            element={<Cadastrofuncionarios />}
+          />
           <Route path="cadastro-rh" element={<CadastroRH />} />
           <Route path="ver-empresas" element={<VerEmpresas />} />
           <Route path="users" element={<Users />} />
           <Route path="status" element={<Status />} />
-          <Route path="avaliacoes/:avaliacaoId" element={<AvaliacaoDetalhe />} />
+          <Route
+            path="avaliacoes/:avaliacaoId"
+            element={<AvaliacaoDetalhe />}
+          />
           <Route path="menu" element={<Menu />} />
           <Route path="perfil" element={<Perfil />} />
           <Route path="avaliacoes" element={<ListarAvaliacoesRH />} />

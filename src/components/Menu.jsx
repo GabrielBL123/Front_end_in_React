@@ -177,11 +177,14 @@ const Menu = () => {
               disabled={auth?.avaliacaoAtivaId != null}
             />
 
+            {/* MenuCard for "Ver Avaliação" is only shown if the user is RH and has access */}
+
             <MenuCard
-              title="Ver Avaliações"
-              description="Acesse a lista e os detalhes das avaliações."
+              title="Ver Avaliação"
+              description="Acesse a lista e os detalhes da avaliação."
               icon="📊"
-              onClick={() => navigate("/avaliacoes")}
+              onClick={() => navigate(`/avaliacoes/${auth?.avaliacaoAtivaId}`)}
+              disabled={auth?.avaliacaoAtivaId == null}
             />
           </div>
         </div>
