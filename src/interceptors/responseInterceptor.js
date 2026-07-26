@@ -1,6 +1,5 @@
-// interceptors/responseInterceptor.js
-import api from "../api";
-import useAuth from "../hooks/useAuth";
+import api from "../api/axios";
+import { setAccessToken, clearAccessToken } from "../tokenStore";
 
 let isRefreshing = false;
 let pendingQueue = []; // requests waiting on the in-flight refresh
@@ -44,16 +43,14 @@ api.interceptors.response.use(
         const { data } = await api.post("/auth/refresh"); // refreshToken cookie sent automatically
         const newAccessToken = data.data.accessToken; // matches your ResponseDTO shape
 
-        const { setAuth } = useAuth();
-        setAuth((prev) => ({ ...prev, accessToken: newAccessToken }));
+        setAccessToken(newAccessToken);
         processQueue(null, newAccessToken);
 
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        const { setAuth } = useAuth();
-        setAuth(null); // clear auth state on refresh failure
+        clearAccessToken(); // clear auth state on refresh failure
         // refresh token itself invalid/expired -> force logout
         window.location.href = "/login";
         return Promise.reject(refreshError);
