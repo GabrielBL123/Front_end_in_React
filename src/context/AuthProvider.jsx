@@ -4,6 +4,8 @@ import { decodeAccessToken } from "../utils/decodeToken";
 import { setAccessToken, clearAccessToken } from "../tokenStore";
 
 const AuthContext = createContext({});
+const normalizeRoles = (roles) =>
+  Array.isArray(roles) ? roles : roles ? [roles] : [];
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({});
@@ -25,12 +27,7 @@ export const AuthProvider = ({ children }) => {
         }
 
         setAccessToken(accessToken);
-        const decodedRoles = decodeAccessToken(accessToken)?.roles;
-        const roles = Array.isArray(decodedRoles)
-          ? decodedRoles
-          : decodedRoles
-            ? [decodedRoles]
-            : [];
+        const roles = normalizeRoles(decodeAccessToken(accessToken)?.roles);
 
         setAuth((prev) => ({
           ...prev,
@@ -46,18 +43,14 @@ export const AuthProvider = ({ children }) => {
 
       try {
         const meResponse = await axios.get("/auth/me", {
-          headers: { Authorization: "Bearer ".concat(accessToken) },
+          headers: { Authorization: "Bearer " + accessToken },
         });
         const mePayload = meResponse?.data?.data || meResponse?.data;
-        const profileRoles = mePayload?.roles;
+        const profileRoles = normalizeRoles(mePayload?.roles);
 
         setAuth((prev) => ({
           ...prev,
-          roles: Array.isArray(profileRoles)
-            ? profileRoles
-            : profileRoles
-              ? [profileRoles]
-              : prev?.roles || [],
+          roles: profileRoles.length ? profileRoles : prev?.roles || [],
           user: mePayload?.login,
           nome: mePayload?.nome,
           empresaNome: mePayload?.empresaNome,
@@ -66,7 +59,7 @@ export const AuthProvider = ({ children }) => {
           avaliacaoAtivaId: mePayload?.avaliacaoAtivaId,
         }));
       } catch (error) {
-        void error;
+        if (import.meta.env.DEV) console.debug("Failed to load /auth/me", error);
       } finally {
         setLoading(false);
       }
