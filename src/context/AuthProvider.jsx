@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
     const bootstrapAuth = async () => {
       const clearAuthState = () => {
         clearAccessToken();
-        setAuth(() => ({}));
+        setAuth({});
       };
 
       let accessToken;
@@ -53,11 +53,14 @@ export const AuthProvider = ({ children }) => {
           headers: { Authorization: ["Bearer", accessToken].join(" ") },
         });
         const mePayload = meResponse?.data?.data || meResponse?.data;
-        const profileRoles = normalizeRoles(mePayload?.roles);
+        const hasRolesField =
+          mePayload && Object.prototype.hasOwnProperty.call(mePayload, "roles");
+        const profileRoles = hasRolesField
+          ? normalizeRoles(mePayload?.roles)
+          : null;
 
         setAuth((prev) => {
-          // Preserve decoded JWT roles if /me omits roles in a transient/partial failure response.
-          const roles = profileRoles.length ? profileRoles : (prev?.roles || []);
+          const roles = profileRoles ?? prev?.roles ?? [];
 
           return {
             ...prev,
