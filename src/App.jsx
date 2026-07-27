@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router";
 // Remova a importação do Layout:
 // import Layout from "./components/Layout";
 import Login from "./components/Login";
