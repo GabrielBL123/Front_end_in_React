@@ -9,6 +9,7 @@ export const decodeAccessToken = (token) => {
     if (import.meta.env.DEV) {
       console.debug("Failed to decode access token", error);
     }
+    // Invalid/malformed tokens are handled by the auth bootstrap fallback paths.
     return null;
   }
 };

@@ -50,12 +50,13 @@ export const AuthProvider = ({ children }) => {
 
       try {
         const meResponse = await axios.get("/auth/me", {
-          headers: { Authorization: "Bearer " + accessToken },
+          headers: { Authorization: ["Bearer", accessToken].join(" ") },
         });
         const mePayload = meResponse?.data?.data || meResponse?.data;
         const profileRoles = normalizeRoles(mePayload?.roles);
 
         setAuth((prev) => {
+          // Preserve decoded JWT roles if /me omits roles in a transient/partial failure response.
           const roles = profileRoles.length ? profileRoles : (prev?.roles || []);
 
           return {
