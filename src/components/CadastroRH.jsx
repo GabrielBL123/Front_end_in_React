@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import axios from "../api/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const REGISTER_URL = "/admin/criar-rh-empresa";
 

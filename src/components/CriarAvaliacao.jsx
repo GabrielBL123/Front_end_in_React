@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import "../tailwind.css";
 
 const CriarAvaliacao = () => {

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
 import "../tailwind.css";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router";
 
 const AvaliacaoDetalhe = () => {
   const { avaliacaoId } = useParams();
