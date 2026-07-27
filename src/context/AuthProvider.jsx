@@ -4,8 +4,11 @@ import { decodeAccessToken } from "../utils/decodeToken";
 import { setAccessToken, clearAccessToken } from "../tokenStore";
 
 const AuthContext = createContext({});
-const normalizeRoles = (roles) =>
-  Array.isArray(roles) ? roles : roles ? [roles] : [];
+const normalizeRoles = (roles) => {
+  if (Array.isArray(roles)) return roles;
+  if (roles) return [roles];
+  return [];
+};
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({});
@@ -52,16 +55,20 @@ export const AuthProvider = ({ children }) => {
         const mePayload = meResponse?.data?.data || meResponse?.data;
         const profileRoles = normalizeRoles(mePayload?.roles);
 
-        setAuth((prev) => ({
-          ...prev,
-          roles: profileRoles.length ? profileRoles : (prev?.roles || []),
-          user: mePayload?.login,
-          nome: mePayload?.nome,
-          empresaNome: mePayload?.empresaNome,
-          empresaId: mePayload?.empresaID,
-          usuarioId: mePayload?.usuarioID,
-          avaliacaoAtivaId: mePayload?.avaliacaoAtivaId,
-        }));
+        setAuth((prev) => {
+          const roles = profileRoles.length ? profileRoles : (prev?.roles || []);
+
+          return {
+            ...prev,
+            roles,
+            user: mePayload?.login,
+            nome: mePayload?.nome,
+            empresaNome: mePayload?.empresaNome,
+            empresaId: mePayload?.empresaID,
+            usuarioId: mePayload?.usuarioID,
+            avaliacaoAtivaId: mePayload?.avaliacaoAtivaId,
+          };
+        });
       } catch (error) {
         if (import.meta.env.DEV) console.debug("Failed to load /auth/me", error);
       } finally {
