@@ -1,7 +1,14 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "../api/axios";
+import { decodeAccessToken } from "../utils/decodeToken";
+import { setAccessToken, clearAccessToken } from "../tokenStore";
 
 const AuthContext = createContext({});
+const normalizeRoles = (roles) => {
+  if (Array.isArray(roles)) return roles;
+  if (roles) return [roles];
+  return [];
+};
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({});
@@ -9,21 +16,65 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const bootstrapAuth = async () => {
-      try {
-        const response = await axios.post("/auth/refresh"); // refreshToken cookie sent automatically
-        const payload = response?.data?.data || response?.data;
+      const clearAuthState = () => {
+        clearAccessToken();
+        setAuth({});
+      };
 
-        setAuth({
-          accessToken: payload?.accessToken,
-          roles: payload?.roles || [],
-          nome: payload?.nome,
-          empresaNome: payload?.empresaNome,
-          empresaId: payload?.empresaID,
-          usuarioId: payload?.usuarioID,
-          avaliacaoAtivaId: payload?.avaliacaoAtivaId,
+      let accessToken;
+      try {
+        const refreshResponse = await axios.post("/auth/refresh");
+        const refreshPayload = refreshResponse?.data?.data || refreshResponse?.data;
+        accessToken = refreshPayload?.accessToken;
+
+        if (!accessToken) {
+          clearAuthState();
+          setLoading(false);
+          return;
+        }
+
+        setAccessToken(accessToken);
+        const roles = normalizeRoles(decodeAccessToken(accessToken)?.roles);
+
+        setAuth((prev) => ({
+          ...prev,
+          accessToken,
+          roles,
+        }));
+      } catch (error) {
+        if (import.meta.env.DEV) console.debug("Failed to refresh auth", error);
+        clearAuthState();
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const meResponse = await axios.get("/auth/me", {
+          headers: { Authorization: ["Bearer", accessToken].join(" ") },
         });
-      } catch {
-        setAuth({}); // no valid refresh token -> stay logged out
+        const mePayload = meResponse?.data?.data || meResponse?.data;
+        const hasRolesField =
+          mePayload && Object.prototype.hasOwnProperty.call(mePayload, "roles");
+        const profileRoles = hasRolesField
+          ? normalizeRoles(mePayload?.roles)
+          : null;
+
+        setAuth((prev) => {
+          const roles = profileRoles ?? prev?.roles ?? [];
+
+          return {
+            ...prev,
+            roles,
+            user: mePayload?.login,
+            nome: mePayload?.nome,
+            empresaNome: mePayload?.empresaNome,
+            empresaId: mePayload?.empresaID,
+            usuarioId: mePayload?.usuarioID,
+            avaliacaoAtivaId: mePayload?.avaliacaoAtivaId,
+          };
+        });
+      } catch (error) {
+        if (import.meta.env.DEV) console.debug("Failed to load /auth/me", error);
       } finally {
         setLoading(false);
       }
