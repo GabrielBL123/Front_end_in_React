@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import axios from "../api/axios";
 
 const Menu = () => {
   const { auth, setAuth } = useAuth();
@@ -23,6 +24,12 @@ const Menu = () => {
 
   const handleLogout = () => {
     setAuth({});
+    try {
+      // Clear the refresh token cookie by making a request to the logout endpoint
+      axios.post("/auth/logout", {}, { withCredentials: true });
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
     navigate("/login", { replace: true });
   };
 

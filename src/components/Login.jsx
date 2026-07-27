@@ -3,6 +3,7 @@ import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 import "../tailwind.css";
+import { setAccessToken } from "../tokenStore";
 
 const LOGIN_URL = "/auth/login";
 
@@ -50,6 +51,7 @@ const Login = () => {
         usuarioId,
         avaliacaoAtivaId,
       });
+      setAccessToken(accessToken); // Store the access token in localStorage
 
       setUser("");
       setPwd("");
@@ -125,15 +127,27 @@ const Login = () => {
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <span
             className="psy-ring-3 absolute rounded-full"
-            style={{ width: "800px", height: "800px", border: "1px solid rgba(199,167,107,0.15)" }}
+            style={{
+              width: "800px",
+              height: "800px",
+              border: "1px solid rgba(199,167,107,0.15)",
+            }}
           />
           <span
             className="psy-ring-2 absolute rounded-full"
-            style={{ width: "600px", height: "600px", border: "1px solid rgba(199,167,107,0.25)" }}
+            style={{
+              width: "600px",
+              height: "600px",
+              border: "1px solid rgba(199,167,107,0.25)",
+            }}
           />
           <span
             className="psy-ring-1 absolute rounded-full"
-            style={{ width: "400px", height: "400px", border: "1px solid rgba(199,167,107,0.4)" }}
+            style={{
+              width: "400px",
+              height: "400px",
+              border: "1px solid rgba(199,167,107,0.4)",
+            }}
           />
         </div>
 
@@ -143,8 +157,8 @@ const Login = () => {
           style={{ backgroundColor: "#fcfbf7", border: "1px solid #dcd9cc" }}
         >
           <div className="text-center mb-8">
-            <div 
-              className="mx-auto w-12 h-12 mb-4 rounded-xl flex items-center justify-center text-2xl shadow-sm" 
+            <div
+              className="mx-auto w-12 h-12 mb-4 rounded-xl flex items-center justify-center text-2xl shadow-sm"
               style={{ backgroundColor: "#C7A76B", color: "#1F2A27" }}
             >
               ✚
@@ -155,17 +169,18 @@ const Login = () => {
             >
               Sistema Cuida+
             </p>
-            <h2
-              className="psy-display text-3xl"
-              style={{ color: "#1f2a27" }}
-            >
+            <h2 className="psy-display text-3xl" style={{ color: "#1f2a27" }}>
               Entrar na plataforma
             </h2>
           </div>
 
           <p
             ref={errRef}
-            className={errMsg ? "block mb-5 rounded-lg px-4 py-2.5 text-sm text-center" : "hidden"}
+            className={
+              errMsg
+                ? "block mb-5 rounded-lg px-4 py-2.5 text-sm text-center"
+                : "hidden"
+            }
             style={
               errMsg
                 ? {

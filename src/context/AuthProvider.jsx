@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
         const payload = response?.data?.data || response?.data;
 
         setAuth({
-          accessToken: payload?.token,
+          accessToken: payload?.accessToken,
           roles: payload?.roles || [],
           nome: payload?.nome,
           empresaNome: payload?.empresaNome,
