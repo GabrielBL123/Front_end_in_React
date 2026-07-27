@@ -1,5 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "../api/axios";
+import { decodeAccessToken } from "../utils/decodeToken";
+import { setAccessToken, clearAccessToken } from "../tokenStore";
 
 const AuthContext = createContext({});
 
@@ -9,21 +11,62 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const bootstrapAuth = async () => {
+      let accessToken;
       try {
-        const response = await axios.post("/auth/refresh"); // refreshToken cookie sent automatically
-        const payload = response?.data?.data || response?.data;
+        const refreshResponse = await axios.post("/auth/refresh");
+        const refreshPayload = refreshResponse?.data?.data || refreshResponse?.data;
+        accessToken = refreshPayload?.accessToken;
 
-        setAuth({
-          accessToken: payload?.accessToken,
-          roles: payload?.roles || [],
-          nome: payload?.nome,
-          empresaNome: payload?.empresaNome,
-          empresaId: payload?.empresaID,
-          usuarioId: payload?.usuarioID,
-          avaliacaoAtivaId: payload?.avaliacaoAtivaId,
-        });
+        if (!accessToken) {
+          clearAccessToken();
+          setAuth(() => ({}));
+          setLoading(false);
+          return;
+        }
+
+        setAccessToken(accessToken);
+        const decodedRoles = decodeAccessToken(accessToken)?.roles;
+        const roles = Array.isArray(decodedRoles)
+          ? decodedRoles
+          : decodedRoles
+            ? [decodedRoles]
+            : [];
+
+        setAuth((prev) => ({
+          ...prev,
+          accessToken,
+          roles,
+        }));
       } catch {
-        setAuth({}); // no valid refresh token -> stay logged out
+        clearAccessToken();
+        setAuth(() => ({}));
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const meResponse = await axios.get("/auth/me", {
+          headers: { Authorization: "Bearer ".concat(accessToken) },
+        });
+        const mePayload = meResponse?.data?.data || meResponse?.data;
+        const profileRoles = mePayload?.roles;
+
+        setAuth((prev) => ({
+          ...prev,
+          roles: Array.isArray(profileRoles)
+            ? profileRoles
+            : profileRoles
+              ? [profileRoles]
+              : prev?.roles || [],
+          user: mePayload?.login,
+          nome: mePayload?.nome,
+          empresaNome: mePayload?.empresaNome,
+          empresaId: mePayload?.empresaID,
+          usuarioId: mePayload?.usuarioID,
+          avaliacaoAtivaId: mePayload?.avaliacaoAtivaId,
+        }));
+      } catch (error) {
+        void error;
       } finally {
         setLoading(false);
       }
