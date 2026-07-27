@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import axios from "../api/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import useAuth from "../hooks/useAuth";
 
 const SEND_MAIL_URL = "/auth/enviar_link_email";

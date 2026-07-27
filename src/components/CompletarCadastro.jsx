@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import axios from "../api/axios";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router";
 
 const REGISTER_URL = "/auth/registrar";
 

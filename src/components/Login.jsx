@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import useAuth from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import axios from "../api/axios";
 import "../tailwind.css";
 import { setAccessToken } from "../tokenStore";
