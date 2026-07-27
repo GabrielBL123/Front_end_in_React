@@ -5,7 +5,10 @@ export const decodeAccessToken = (token) => {
 
   try {
     return jwtDecode(token);
-  } catch {
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.debug("Failed to decode access token", error);
+    }
     return null;
   }
 };

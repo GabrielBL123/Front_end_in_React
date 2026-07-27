@@ -13,6 +13,11 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const bootstrapAuth = async () => {
+      const clearAuthState = () => {
+        clearAccessToken();
+        setAuth(() => ({}));
+      };
+
       let accessToken;
       try {
         const refreshResponse = await axios.post("/auth/refresh");
@@ -20,8 +25,7 @@ export const AuthProvider = ({ children }) => {
         accessToken = refreshPayload?.accessToken;
 
         if (!accessToken) {
-          clearAccessToken();
-          setAuth(() => ({}));
+          clearAuthState();
           setLoading(false);
           return;
         }
@@ -34,9 +38,9 @@ export const AuthProvider = ({ children }) => {
           accessToken,
           roles,
         }));
-      } catch {
-        clearAccessToken();
-        setAuth(() => ({}));
+      } catch (error) {
+        if (import.meta.env.DEV) console.debug("Failed to refresh auth", error);
+        clearAuthState();
         setLoading(false);
         return;
       }
@@ -50,7 +54,7 @@ export const AuthProvider = ({ children }) => {
 
         setAuth((prev) => ({
           ...prev,
-          roles: profileRoles.length ? profileRoles : prev?.roles || [],
+          roles: profileRoles.length ? profileRoles : (prev?.roles || []),
           user: mePayload?.login,
           nome: mePayload?.nome,
           empresaNome: mePayload?.empresaNome,
