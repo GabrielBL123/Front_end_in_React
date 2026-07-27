@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { axiosPrivate as axios } from "../api/axios";
 import "../tailwind.css";
 
@@ -333,7 +333,7 @@ const fatoresQuestionario = [
 ];
 
 const Questionario = () => {
-  const navigate = useNavigate();
+ 
   const { token: tokenId } = useParams();
 
   const [setores, setSetores] = useState([]);
@@ -365,7 +365,6 @@ const Questionario = () => {
   };
 
   const [respostas, setRespostas] = useState(estadoInicialRespostas);
-  const [msgSucesso, setMsgSucesso] = useState("");
   const [msgErro, setMsgErro] = useState("");
 
   useEffect(() => {
@@ -416,7 +415,6 @@ const Questionario = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMsgSucesso("");
     setMsgErro("");
 
     const arrayDeRespostas = [];
@@ -449,8 +447,10 @@ const Questionario = () => {
         },
       );
 
-      setMsgSucesso("Seus dados e avaliação foram salvos com sucesso!");
-      setTimeout(() => navigate("/"), 3000);
+      // ✨ Em vez de setMsgSucesso e Navigate, mudamos para a Etapa 3 (Tela de Sucesso)
+      setEtapa(3);
+      window.scrollTo(0, 0);
+
     } catch (err) {
       console.error(err);
       if (err.response?.status === 400) {
@@ -502,46 +502,47 @@ const Questionario = () => {
         className="psy-shell w-full max-w-4xl p-8 md:p-12 rounded-3xl shadow-xl my-8"
         style={{ backgroundColor: "#FCFBF7", border: "1px solid #DCD9CC" }}
       >
-        {/* Breadcrumb de Progresso */}
-        <div className="flex justify-center mb-8">
-          <div className="flex items-center gap-4">
-            <span
-              className={`px-4 py-2 rounded-full font-bold text-xs uppercase tracking-wider transition-colors ${etapa === 1 ? "bg-[#1E3835] text-[#F3F1E9] shadow-sm" : "bg-[#EDEEE8] text-[#5C7D63]"}`}
-            >
-              1. Identificação
-            </span>
-            <div className="w-10 h-1 rounded-full" style={{ backgroundColor: "#E4E1D3" }}>
-              <div
-                className={`h-full rounded-full transition-all duration-500 ${etapa === 2 ? "bg-[#6E8F76] w-full" : "w-0"}`}
-              ></div>
+        
+        {/* Só exibe o Breadcrumb e o Título se não estiver na etapa de sucesso (3) */}
+        {etapa < 3 && (
+          <>
+            {/* Breadcrumb de Progresso */}
+            <div className="flex justify-center mb-8">
+              <div className="flex items-center gap-4">
+                <span
+                  className={`px-4 py-2 rounded-full font-bold text-xs uppercase tracking-wider transition-colors ${etapa === 1 ? "bg-[#1E3835] text-[#F3F1E9] shadow-sm" : "bg-[#EDEEE8] text-[#5C7D63]"}`}
+                >
+                  1. Identificação
+                </span>
+                <div className="w-10 h-1 rounded-full" style={{ backgroundColor: "#E4E1D3" }}>
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${etapa === 2 ? "bg-[#6E8F76] w-full" : "w-0"}`}
+                  ></div>
+                </div>
+                <span
+                  className={`px-4 py-2 rounded-full font-bold text-xs uppercase tracking-wider transition-colors ${etapa === 2 ? "bg-[#1E3835] text-[#F3F1E9] shadow-sm" : "bg-[#EDEEE8] text-[#8B9188]"}`}
+                >
+                  2. Questionário
+                </span>
+              </div>
             </div>
-            <span
-              className={`px-4 py-2 rounded-full font-bold text-xs uppercase tracking-wider transition-colors ${etapa === 2 ? "bg-[#1E3835] text-[#F3F1E9] shadow-sm" : "bg-[#EDEEE8] text-[#8B9188]"}`}
-            >
-              2. Questionário
-            </span>
-          </div>
-        </div>
 
-        <div className="text-center mb-8">
-          <h2 className="psy-display text-3xl md:text-4xl mb-3" style={{ color: "#1F2A27" }}>
-            Mapeamento de Saúde Organizacional
-          </h2>
-          <p className="text-base" style={{ color: "#6B7570" }}>
-            {etapa === 1
-              ? "Preencha seus dados para iniciar a avaliação."
-              : "Responda com sinceridade. Suas respostas são sigilosas."}
-          </p>
-        </div>
+            <div className="text-center mb-8">
+              <h2 className="psy-display text-3xl md:text-4xl mb-3" style={{ color: "#1F2A27" }}>
+                Mapeamento de Saúde Organizacional
+              </h2>
+              <p className="text-base" style={{ color: "#6B7570" }}>
+                {etapa === 1
+                  ? "Preencha seus dados para iniciar a avaliação."
+                  : "Responda com sinceridade. Suas respostas são sigilosas."}
+              </p>
+            </div>
+          </>
+        )}
 
         {msgErro && (
           <div className="mb-6 p-4 rounded-xl text-center font-medium text-sm" style={{ border: "1px solid rgba(201,123,107,0.4)", backgroundColor: "rgba(201,123,107,0.1)", color: "#8A3E31" }}>
             {msgErro}
-          </div>
-        )}
-        {msgSucesso && (
-          <div className="mb-6 p-4 rounded-xl text-center font-medium text-sm animate-pulse" style={{ border: "1px solid rgba(110,143,118,0.4)", backgroundColor: "rgba(110,143,118,0.1)", color: "#1E3835" }}>
-            {msgSucesso}
           </div>
         )}
 
@@ -549,7 +550,7 @@ const Questionario = () => {
         {etapa === 1 && (
           <form
             onSubmit={avancarEtapa}
-            className="p-8 rounded-2xl border shadow-inner space-y-6"
+            className="p-8 rounded-2xl border shadow-inner space-y-6 animate-fade-in"
             style={{ backgroundColor: "#EDEEE8", borderColor: "#D8D6CB" }}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -650,7 +651,7 @@ const Questionario = () => {
         {etapa === 2 && (
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col gap-10"
+            className="flex flex-col gap-10 animate-fade-in"
           >
             <div className="p-6 rounded-2xl border" style={{ backgroundColor: "#EDEEE8", borderColor: "#D8D6CB" }}>
               <h3 className="text-center font-bold mb-4 uppercase tracking-wider text-xs" style={{ color: "#5C7D63" }}>
@@ -747,6 +748,27 @@ const Questionario = () => {
               </button>
             </div>
           </form>
+        )}
+
+        {/* ==================== ETAPA 3: SUCESSO ==================== */}
+        {etapa === 3 && (
+          <div className="text-center py-16 animate-fade-in">
+            <div 
+              className="w-24 h-24 rounded-full flex items-center justify-center text-4xl mx-auto mb-8 shadow-sm border-4" 
+              style={{ backgroundColor: "#E3F0E6", color: "#2F5C3E", borderColor: "rgba(110,143,118,0.2)" }}
+            >
+              ✓
+            </div>
+            <h2 className="psy-display text-4xl md:text-5xl mb-4" style={{ color: "#1F2A27" }}>
+              Muito obrigado!
+            </h2>
+            <p className="text-xl font-medium" style={{ color: "#5C7D63" }}>
+              Sua resposta foi enviada com sucesso.
+            </p>
+            <p className="text-sm mt-6" style={{ color: "#8B9188" }}>
+              Você já pode fechar esta página.
+            </p>
+          </div>
         )}
       </div>
     </div>
