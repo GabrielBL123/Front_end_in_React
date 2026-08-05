@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useRef } from "react";
 import axios from "../api/axios";
 import { decodeAccessToken } from "../utils/decodeToken";
 import { setAccessToken, clearAccessToken } from "../tokenStore";
@@ -13,8 +13,12 @@ const normalizeRoles = (roles) => {
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({});
   const [loading, setLoading] = useState(true); // block routing until we know auth state
+  const hasBootstrapped = useRef(false);
 
   useEffect(() => {
+    if (hasBootstrapped.current) return;
+    hasBootstrapped.current = true;
+
     const bootstrapAuth = async () => {
       const clearAuthState = () => {
         clearAccessToken();
@@ -24,7 +28,8 @@ export const AuthProvider = ({ children }) => {
       let accessToken;
       try {
         const refreshResponse = await axios.post("/auth/refresh");
-        const refreshPayload = refreshResponse?.data?.data || refreshResponse?.data;
+        const refreshPayload =
+          refreshResponse?.data?.data || refreshResponse?.data;
         accessToken = refreshPayload?.accessToken;
 
         if (!accessToken) {
@@ -74,7 +79,8 @@ export const AuthProvider = ({ children }) => {
           };
         });
       } catch (error) {
-        if (import.meta.env.DEV) console.debug("Failed to load /auth/me", error);
+        if (import.meta.env.DEV)
+          console.debug("Failed to load /auth/me", error);
       } finally {
         setLoading(false);
       }

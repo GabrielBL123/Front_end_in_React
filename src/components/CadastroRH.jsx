@@ -1,11 +1,13 @@
 import { useRef, useState, useEffect } from "react";
 import axios from "../api/axios";
 import { useNavigate } from "react-router";
+import useAuth from "../hooks/useAuth";
 
 const REGISTER_URL = "/admin/criar-rh-empresa";
 
 const CadastroRH = () => {
   const navigate = useNavigate();
+  const { auth } = useAuth();
 
   const errRef = useRef();
   const emailRef = useRef();
@@ -20,7 +22,7 @@ const CadastroRH = () => {
   const [cnpj, setCnpj] = useState("");
   const [nomeEmpresa, setNomeEmpresa] = useState("");
   const [emailEmpresa, setEmailEmpresa] = useState("");
-  const [telefoneEmpresa, setTelefoneEmpresa] = useState(""); 
+  const [telefoneEmpresa, setTelefoneEmpresa] = useState("");
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -31,7 +33,16 @@ const CadastroRH = () => {
 
   useEffect(() => {
     setErrMsg("");
-  }, [login, nome, pwd, matchPwd, cnpj, nomeEmpresa, emailEmpresa, telefoneEmpresa]);
+  }, [
+    login,
+    nome,
+    pwd,
+    matchPwd,
+    cnpj,
+    nomeEmpresa,
+    emailEmpresa,
+    telefoneEmpresa,
+  ]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,12 +62,13 @@ const CadastroRH = () => {
         cnpj: cnpj,
         nomeEmpresa: nomeEmpresa,
         emailEmpresa: emailEmpresa,
-        telefoneEmpresa: telefoneEmpresa, 
+        telefoneEmpresa: telefoneEmpresa,
       });
 
       const response = await axios.post(REGISTER_URL, payload, {
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${auth?.accessToken}`, // Perfeito, o RH precisa estar logado!
         },
         withCredentials: true,
       });
@@ -87,8 +99,8 @@ const CadastroRH = () => {
         setCnpj("");
         setNomeEmpresa("");
         setEmailEmpresa("");
-        setTelefoneEmpresa(""); 
-        
+        setTelefoneEmpresa("");
+
         // Cronômetro automático removido daqui!
       }
     } catch (err) {
@@ -142,7 +154,7 @@ const CadastroRH = () => {
       `}</style>
 
       {success ? (
-        <div 
+        <div
           className="psy-shell w-full max-w-2xl p-10 md:p-14 rounded-3xl text-center mx-auto"
           style={{
             backgroundColor: "#FCFBF7",
@@ -150,16 +162,25 @@ const CadastroRH = () => {
             border: "1px solid #DCD9CC",
           }}
         >
-          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl" style={{ backgroundColor: "#E3F0E6", color: "#2F5C3E" }}>
+          <div
+            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl"
+            style={{ backgroundColor: "#E3F0E6", color: "#2F5C3E" }}
+          >
             ✓
           </div>
-          <h1 className="psy-display text-4xl mb-4" style={{ color: "#1F2A27" }}>
+          <h1
+            className="psy-display text-4xl mb-4"
+            style={{ color: "#1F2A27" }}
+          >
             Sucesso!
           </h1>
           <p className="text-lg font-medium mb-2" style={{ color: "#5C7D63" }}>
             Registro de RH e Empresa concluído.
           </p>
-          <p className="text-base mb-10 leading-relaxed" style={{ color: "#6B7570" }}>
+          <p
+            className="text-base mb-10 leading-relaxed"
+            style={{ color: "#6B7570" }}
+          >
             O link de acesso foi enviado com sucesso para o e-mail informado.
           </p>
           <button
@@ -170,7 +191,7 @@ const CadastroRH = () => {
           </button>
         </div>
       ) : (
-        <div 
+        <div
           className="psy-shell w-full max-w-4xl p-8 md:p-14 rounded-3xl mx-auto"
           style={{
             backgroundColor: "#FCFBF7",
@@ -178,26 +199,43 @@ const CadastroRH = () => {
             border: "1px solid #DCD9CC",
           }}
         >
-          <div className="mb-10 border-b pb-6" style={{ borderBottomColor: "#E4E1D3" }}>
+          <div
+            className="mb-10 border-b pb-6"
+            style={{ borderBottomColor: "#E4E1D3" }}
+          >
             <div className="flex items-center gap-3 mb-2">
-              <span className="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style={{ backgroundColor: "#C7A76B", color: "#1F2A27" }}>
+              <span
+                className="w-10 h-10 rounded-xl flex items-center justify-center text-lg"
+                style={{ backgroundColor: "#C7A76B", color: "#1F2A27" }}
+              >
                 ✚
               </span>
-              <p className="text-xs tracking-[0.25em] uppercase font-bold" style={{ color: "#5C7D63" }}>
+              <p
+                className="text-xs tracking-[0.25em] uppercase font-bold"
+                style={{ color: "#5C7D63" }}
+              >
                 Administração
               </p>
             </div>
-            <h2 className="psy-display text-3xl md:text-4xl" style={{ color: "#1F2A27" }}>
+            <h2
+              className="psy-display text-3xl md:text-4xl"
+              style={{ color: "#1F2A27" }}
+            >
               Registrar RH e Empresa
             </h2>
             <p className="mt-2 text-sm" style={{ color: "#6B7570" }}>
-              Preencha os dados abaixo para cadastrar um novo cliente no sistema.
+              Preencha os dados abaixo para cadastrar um novo cliente no
+              sistema.
             </p>
           </div>
 
           <p
             ref={errRef}
-            className={errMsg ? "block w-full p-4 rounded-xl text-center mb-8 text-sm font-medium" : "hidden"}
+            className={
+              errMsg
+                ? "block w-full p-4 rounded-xl text-center mb-8 text-sm font-medium"
+                : "hidden"
+            }
             style={
               errMsg
                 ? {
@@ -214,16 +252,22 @@ const CadastroRH = () => {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-              
               {/* DADOS DA EMPRESA */}
               <div className="md:col-span-2">
-                <h3 className="font-semibold text-lg border-b pb-2 mb-4" style={{ color: "#3a423e", borderBottomColor: "#E4E1D3" }}>
+                <h3
+                  className="font-semibold text-lg border-b pb-2 mb-4"
+                  style={{ color: "#3a423e", borderBottomColor: "#E4E1D3" }}
+                >
                   Dados da Empresa
                 </h3>
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="nomeEmpresa" className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                <label
+                  htmlFor="nomeEmpresa"
+                  className="text-sm font-semibold"
+                  style={{ color: "#3a423e" }}
+                >
                   Nome da Empresa
                 </label>
                 <input
@@ -238,7 +282,11 @@ const CadastroRH = () => {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="cnpj" className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                <label
+                  htmlFor="cnpj"
+                  className="text-sm font-semibold"
+                  style={{ color: "#3a423e" }}
+                >
                   CNPJ
                 </label>
                 <input
@@ -253,7 +301,11 @@ const CadastroRH = () => {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="emailEmpresa" className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                <label
+                  htmlFor="emailEmpresa"
+                  className="text-sm font-semibold"
+                  style={{ color: "#3a423e" }}
+                >
                   E-mail Comercial
                 </label>
                 <input
@@ -268,7 +320,11 @@ const CadastroRH = () => {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="telefoneEmpresa" className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                <label
+                  htmlFor="telefoneEmpresa"
+                  className="text-sm font-semibold"
+                  style={{ color: "#3a423e" }}
+                >
                   Telefone
                 </label>
                 <input
@@ -284,13 +340,20 @@ const CadastroRH = () => {
 
               {/* DADOS DO RESPONSÁVEL (RH) */}
               <div className="md:col-span-2 mt-4">
-                <h3 className="font-semibold text-lg border-b pb-2 mb-4" style={{ color: "#3a423e", borderBottomColor: "#E4E1D3" }}>
+                <h3
+                  className="font-semibold text-lg border-b pb-2 mb-4"
+                  style={{ color: "#3a423e", borderBottomColor: "#E4E1D3" }}
+                >
                   Dados do Responsável (RH)
                 </h3>
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="nome" className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                <label
+                  htmlFor="nome"
+                  className="text-sm font-semibold"
+                  style={{ color: "#3a423e" }}
+                >
                   Nome Completo
                 </label>
                 <input
@@ -305,7 +368,11 @@ const CadastroRH = () => {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="login" className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                <label
+                  htmlFor="login"
+                  className="text-sm font-semibold"
+                  style={{ color: "#3a423e" }}
+                >
                   E-mail de Acesso (Login)
                 </label>
                 <input
@@ -321,7 +388,11 @@ const CadastroRH = () => {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="password" className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                <label
+                  htmlFor="password"
+                  className="text-sm font-semibold"
+                  style={{ color: "#3a423e" }}
+                >
                   Senha Temporária
                 </label>
                 <input
@@ -335,7 +406,11 @@ const CadastroRH = () => {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="confirm_pwd" className="text-sm font-semibold" style={{ color: "#3a423e" }}>
+                <label
+                  htmlFor="confirm_pwd"
+                  className="text-sm font-semibold"
+                  style={{ color: "#3a423e" }}
+                >
                   Confirmar Senha
                 </label>
                 <input
